@@ -45,12 +45,18 @@ int main()
 	constexpr int FONT_SIZE = 64;
 	const char* FONT_PATH = "fonts/Roboto-Regular.ttf";
 
-	Trex::Atlas atlas(FONT_PATH, FONT_SIZE, Trex::Charset::Ascii());
+	Trex::Atlas atlas(FONT_PATH, FONT_SIZE, Trex::Charset::Full());
 	Trex::TextShaper shaper(atlas);
-	Trex::ShapedGlyphs glyphs = shaper.ShapeAscii("Hello, World!");
+	Trex::ShapedGlyphs asciiGlyphs = shaper.ShapeAscii("Hello, World!");
 
+	std::vector<uint32_t> somePolishText = {
+		0x5A, 0x61, 0x17C, 0xF3, 0x142, 0x107,
+		0x20, 0x67, 0x119, 0x15B, 0x6C, 0x105,
+		0x20, 0x6A, 0x61, 0x17A, 0x144
+	};
+	Trex::ShapedGlyphs unicodeGlyphs = shaper.ShapeUnicode(somePolishText);
 
-	InitWindow(500, 250, "BasicTextShaping Example");
+	InitWindow(600, 250, "TextShaping Example");
 
 	// Load atlas texture
 	Image atlasImage = GetAtlasAsBitmapImage(atlas);
@@ -61,7 +67,8 @@ int main()
 		BeginDrawing();
 		ClearBackground(WHITE);
 
-		RenderShapedText(50, 100, glyphs, atlasTexture);
+		RenderShapedText(50, 100, asciiGlyphs, atlasTexture);
+		RenderShapedText(50, 200, unicodeGlyphs, atlasTexture);
 
 		EndDrawing();
 	}

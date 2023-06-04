@@ -9,11 +9,11 @@ function(add_example_project TARGET_NAME)
     target_link_libraries(${TARGET_NAME} trex raylib)
 endfunction()
 
-add_example_project(BasicAtlasGeneration)
-add_example_project(LoadAllChars)
-add_example_project(RenderSingleCharacters)
-add_example_project(RenderFontSDF)
-add_example_project(BasicTextShaping)
+add_example_project(Example_AtlasGeneration)
+add_example_project(Example_LoadAllChars)
+add_example_project(Example_RenderSingleCharacters)
+add_example_project(Example_RenderFontSDF)
+add_example_project(Example_TextShaping)
 
 # Add Trex library
 add_subdirectory(../ trexlib)
