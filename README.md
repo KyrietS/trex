@@ -26,8 +26,8 @@ float cursorX = 100;
 float cursorY = 100;
 for (const auto& glyph : glyphs)
 {
-	float x = cursorX + glyph.xOffset + glyph.info.bearingX;
-	float y = cursorY + glyph.yOffset - glyph.info.bearingY;
+    float x = cursorX + glyph.xOffset + glyph.info.bearingX;
+    float y = cursorY + glyph.yOffset - glyph.info.bearingY;
 
     int atlasGlyphX = glyph.info.x;
     int atlasGlyphY = glyph.info.y;

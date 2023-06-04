@@ -23,7 +23,7 @@ set_target_properties(trex PROPERTIES FOLDER "Trex")
 get_target_property(dependencies trex INTERFACE_LINK_LIBRARIES)
 # Iterate over the dependencies and put them in "Trex" folder
 foreach(dependency ${dependencies})
-  set_target_properties(${dependency} PROPERTIES FOLDER "Trex")
+    set_target_properties(${dependency} PROPERTIES FOLDER "Trex")
 endforeach()
 
 # Raylib
