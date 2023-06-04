@@ -1,5 +1,5 @@
 #include "Atlas.hpp"
-#include "Shaper.hpp"
+#include "TextShaper.hpp"
 #include "raylib.h"
 
 Image GetAtlasAsBitmapImage(Trex::Atlas& atlas)

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(trex_examples)
+project(TrexExamples)
 
 set(CMAKE_CXX_STANDARD 20)
 
