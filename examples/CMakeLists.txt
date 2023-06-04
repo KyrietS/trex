@@ -12,6 +12,7 @@ endfunction()
 add_example_project(BasicAtlasGeneration)
 add_example_project(LoadAllChars)
 add_example_project(RenderSingleCharacters)
+add_example_project(RenderFontSDF)
 
 # Add Trex library
 add_subdirectory(../ trexlib)
@@ -30,3 +31,4 @@ set_target_properties(raylib PROPERTIES FOLDER "Raylib")
 
 # Copy fonts to build directory
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/fonts DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
