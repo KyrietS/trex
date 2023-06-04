@@ -12,11 +12,8 @@ Image GetAtlasAsBitmapImage(Trex::Atlas& atlas)
 	return atlasImage;
 }
 
-Image GetLetterFromAtlasImage(Trex::Atlas& atlas, char letter)
+void RenderGlyph(float x, float y, const Trex::Glyph& glyph, Texture2D& atlasTexture)
 {
-	Trex::Glyph glyph = atlas.GetGlyphByCodepoint(letter);
-
-	Image atlasAsImage = GetAtlasAsBitmapImage(atlas);
 	Rectangle atlasFragment = {
 		.x = (float)glyph.x, // top-left corner of the glyph in the atlas
 		.y = (float)glyph.y, // top-left corner of the glyph in the atlas
@@ -24,7 +21,8 @@ Image GetLetterFromAtlasImage(Trex::Atlas& atlas, char letter)
 		.height = (float)glyph.height // height of the glyph in the atlas
 	};
 
-	return ImageFromImage(atlasAsImage, atlasFragment);
+	// Draw a texture fragment from the atlas
+	DrawTextureRec(atlasTexture, atlasFragment, { x, y }, WHITE);
 }
 
 int main()
@@ -36,34 +34,31 @@ int main()
 
 	InitWindow(500, 250, "RenderSingleCharacters Example");
 
-	// Character 'a'
-	Image letterA = GetLetterFromAtlasImage(atlas, 'a');
-	Texture2D letterATexture = LoadTextureFromImage(letterA);
-	UnloadImage(letterA);
-
-	// Character '@'
-	Image atSign = GetLetterFromAtlasImage(atlas, '@');
-	Texture2D atSignTexture = LoadTextureFromImage(atSign);
-	UnloadImage(atSign);
-
-	// Character from outside the ASCII charset
-	Image undefinedCharacter = GetLetterFromAtlasImage(atlas, (char)178);
-	Texture2D undefinedCharacterTexture = LoadTextureFromImage(undefinedCharacter);
-	UnloadImage(undefinedCharacter);
+	// Load atlas texture
+	Image atlasImage = GetAtlasAsBitmapImage(atlas);
+	Texture2D atlasTexture = LoadTextureFromImage(atlasImage);
 
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
 		ClearBackground(WHITE);
-		DrawTexture(letterATexture, 50, 50, WHITE);
-		DrawTexture(atSignTexture, 150, 50, WHITE);
-		DrawTexture(undefinedCharacterTexture, 250, 50, WHITE);
+
+		// Character 'a'
+		const Trex::Glyph& glyphA = atlas.GetGlyphByCodepoint('a');
+		RenderGlyph(50, 50, glyphA, atlasTexture);
+
+		// Character '@'
+		const Trex::Glyph& glyphAtSign = atlas.GetGlyphByCodepoint('@');
+		RenderGlyph(150, 50, glyphAtSign, atlasTexture);
+
+		// Character from outside the ASCII charset
+		const Trex::Glyph& glyphUndefined = atlas.GetGlyphByCodepoint((char)178);
+		RenderGlyph(250, 50, glyphUndefined, atlasTexture);
+
 		EndDrawing();
 	}
 
-	UnloadTexture(letterATexture);
-	UnloadTexture(atSignTexture);
-	UnloadTexture(undefinedCharacterTexture);
+	UnloadTexture(atlasTexture);
 	CloseWindow();
 
 	return 0;
