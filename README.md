@@ -1,6 +1,8 @@
 # Trex
 
-Trex is a C++ library that can render the font with [FreeType](https://github.com/freetype/freetype) library, generate glyph atlas and shape the text with [HarfBuzz](https://github.com/harfbuzz/harfbuzz). It provides a simple API making it easy to integrate high-quality typography into you application.
+![Showcase hello world](docs/hello-world.png)
+
+Trex is a font rasterizer, atlas generator and text shaping library written in C++. It uses [FreeType](https://github.com/freetype/freetype) and [HarfBuzz](https://github.com/harfbuzz/harfbuzz) libraries under the hood. It provides a simple API that makes it easy to integrate high quality typography into your application.
 
 The text rendered by this library is every pixel identical to that rendered by the Chrome and Firefox browsers. As such, Trex is an excellent choice when you need to display text in your application that, when exported to SVG or HTML format, should look identical.
 
@@ -50,6 +52,16 @@ To get started with Trex, follow the instructions below:
 2. Configure your project's CMake file to include the Trex library. The target exported from this library is called `trex`.
 3. Build and link your project with the Trex library.
 4. You can use the provided examples in the `examples` folder as a reference of how to use Trex.
+
+## Showcase
+### 512 x 512 ASCII atlas with glyphs from 0 to 127.
+![Ascii atlas](docs/ascii-atlas.png)
+
+### 2048 x 1024 atlas with all glyphs from the Roboto font.
+![Roboto atlas](docs/roboto-atlas.png)
+
+## Documentation
+The documentation for the Trex API can be found [here](docs/README.md).
 
 ## Dependencies
 
