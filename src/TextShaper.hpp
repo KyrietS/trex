@@ -30,8 +30,9 @@ namespace Trex
 		~TextShaper();
 
 		ShapedGlyphs ShapeAscii(const std::string& text);
-		ShapedGlyphs ShapeUnicode(const std::vector<uint32_t>& codepoints);
 		ShapedGlyphs ShapeUtf8(const std::string& text);
+		ShapedGlyphs ShapeUtf32(const std::u32string& text);
+		ShapedGlyphs ShapeUnicode(const std::vector<uint32_t>& codepoints);
 
 	private:
 		ShapedGlyphs GetShapedGlyphs();

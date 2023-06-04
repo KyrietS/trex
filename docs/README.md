@@ -247,6 +247,22 @@ ShapedGlyphs TextShaper::ShapeAscii(const std::string& text);
 Shape ASCII text into [ShapedGlyphs](#shaped-glyphs).
 * `text` - ASCII text.
 
+### TextShaper::ShapeUtf8
+```cpp
+ShapedGlyphs TextShaper::ShapeUtf8(const std::string& text);
+```
+Shape UTF-8 text into [ShapedGlyphs](#shaped-glyphs).
+* `text` - byte sequence of UTF-8 encoded text.
+
+## TextShaper::ShapeUtf32
+```cpp
+ShapedGlyphs TextShaper::ShapeUtf32(const std::u32string& text);
+```
+Shape UTF-32 text into [ShapedGlyphs](#shaped-glyphs).
+* `text` - UTF-32 encoded text. Each character is a Unicode codepoint.
+
+Note: u32string must be converted to a vector of uint32_t before shaping. It allocates additional memory and copies the string. Use ShapeUnicode function whenever possible.
+
 ### TextShaper::ShapeUnicode
 ```cpp
 ShapedGlyphs TextShaper::ShapeUnicode(const std::vector<uint32_t>& codepoints);
@@ -254,9 +270,3 @@ ShapedGlyphs TextShaper::ShapeUnicode(const std::vector<uint32_t>& codepoints);
 Shape Unicode text into [ShapedGlyphs](#shaped-glyphs).
 * `codepoints` - Unicode codepoints.
 
-### TextShaper::ShapeUtf8
-```cpp
-ShapedGlyphs TextShaper::ShapeUtf8(const std::string& text);
-```
-Shape UTF-8 text into [ShapedGlyphs](#shaped-glyphs).
-* `text` - byte sequence of UTF-8 encoded text.

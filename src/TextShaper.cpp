@@ -25,19 +25,27 @@ namespace Trex
 		return ShapeUnicode(codepoints);
 	}
 
-	ShapedGlyphs TextShaper::ShapeUnicode(const std::vector<uint32_t>& codepoints)
+	ShapedGlyphs TextShaper::ShapeUtf8(const std::string& text)
 	{
 		ResetBuffer();
-		hb_buffer_add_codepoints(m_Buffer, codepoints.data(), (int)codepoints.size(), 0, (int)codepoints.size());
+		hb_buffer_add_utf8(m_Buffer, text.c_str(), (int)text.size(), 0, (int)text.size());
 		hb_shape(m_Font, m_Buffer, nullptr, 0);
 
 		return GetShapedGlyphs();
 	}
 
-	ShapedGlyphs TextShaper::ShapeUtf8(const std::string& text)
+	ShapedGlyphs TextShaper::ShapeUtf32(const std::u32string& text)
+	{
+		// Unfortunately casting text.c_str() to uint32_t* violates the strict aliasing rule.
+		// char32_t and uint32_t are not the same type, even though they are both 32 bits wide.
+		std::vector<uint32_t> codepoints(text.begin(), text.end());
+		return ShapeUnicode(codepoints);
+	}
+
+	ShapedGlyphs TextShaper::ShapeUnicode(const std::vector<uint32_t>& codepoints)
 	{
 		ResetBuffer();
-		hb_buffer_add_utf8(m_Buffer, text.c_str(), (int)text.size(), 0, (int)text.size());
+		hb_buffer_add_codepoints(m_Buffer, codepoints.data(), (int)codepoints.size(), 0, (int)codepoints.size());
 		hb_shape(m_Font, m_Buffer, nullptr, 0);
 
 		return GetShapedGlyphs();
