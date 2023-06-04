@@ -11,6 +11,7 @@ endfunction()
 
 add_example_project(BasicAtlasGeneration)
 add_example_project(LoadAllChars)
+add_example_project(RenderSingleCharacters)
 
 # Add Trex library
 add_subdirectory(../ trexlib)
