@@ -4,3 +4,7 @@
 [submodule "lib/harfbuzz"]
 	path = lib/harfbuzz
 	url = git@github.com:harfbuzz/harfbuzz.git
+[submodule "examples/raylib"]
+	path = examples/raylib
+	url = git@github.com:raysan5/raylib.git
+	shallow = true
