@@ -10,6 +10,7 @@ function(add_example_project TARGET_NAME)
 endfunction()
 
 add_example_project(BasicAtlasGeneration)
+add_example_project(LoadAllChars)
 
 # Add Trex library
 add_subdirectory(../ trexlib)
