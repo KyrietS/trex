@@ -26,7 +26,7 @@ Trex::ShapedGlyphs glyphs = shaper.ShapeAscii("Hello world!");
 
 float cursorX = 100;
 float cursorY = 100;
-for (const auto& glyph : glyphs)
+for (const Trex::ShapedGlyph& glyph : glyphs)
 {
     float x = cursorX + glyph.xOffset + glyph.info.bearingX;
     float y = cursorY + glyph.yOffset - glyph.info.bearingY;
@@ -37,7 +37,7 @@ for (const auto& glyph : glyphs)
     int atlasGlyphHeight = glyph.info.height;
 
     // Draw a glyph at (x, y) by taking the atlas bitmap fragment
-    // ...
+    // ... atlas.GetBitmap() ...
 
     cursorX += glyph.xAdvance;
     cursorX += glyph.yAdvance;
@@ -49,16 +49,20 @@ for (const auto& glyph : glyphs)
 To get started with Trex, follow the instructions below:
 
 1. Clone the repository recursively: `git clone --recurse-submodules https://github.com/KyrietS/trex.git`
-2. Configure your project's CMake file to include the Trex library. The target exported from this library is called `trex`.
-3. Build and link your project with the Trex library.
-4. You can use the provided examples in the `examples` folder as a reference of how to use Trex.
+2. In your project's CMakeLists.txt add:
+    -  `add_subdirectory(path_to_trex)` 
+    - `target_link_libraries(your_project trex)`
+3. Rebuild your project.
+4. You can use the provided examples in the [`examples`](examples/) folder as a reference of how to use Trex.
 
 ## Showcase
-### 512 x 512 ASCII atlas with glyphs from 0 to 127.
-![Ascii atlas](docs/ascii-atlas.png)
+### 512 x 512 ASCII atlas with glyphs from the [Roboto](https://fonts.google.com/specimen/Roboto) font (from 0 to 127).
+<img src="docs/ascii-atlas.png" width="256">
 
-### 2048 x 1024 atlas with all glyphs from the Roboto font.
+### 2048 x 1024 atlas with all glyphs from the [Roboto](https://fonts.google.com/specimen/Roboto) font.
 ![Roboto atlas](docs/roboto-atlas.png)
+
+The image above was cropped manually. Trex will always generate a square atlas. In this case it would be 2048 x 2048.
 
 ## Documentation
 The documentation for the Trex API can be found [here](docs/README.md).
@@ -76,7 +80,7 @@ Make sure to clone these dependencies along with the Trex.
 Examples use [raylib](https://github.com/raysan5/raylib) library to render a text on the screen.
 
 ## License
-Copyright © 2023 KyrietS
+Copyright © 2023 KyrietS\
 Use of this software is granted under the terms of the MIT License.
 
 See the [LICENSE](LICENSE) file for more details.
