@@ -57,6 +57,7 @@ Trex has the following dependencies:
 
 * FreeType - A high-quality font engine for rendering text.
 * HarfBuzz - A text shaping engine for accurate and complex text shaping.
+* stb_image_write - A header-only library for saving atlas bitmaps to PNG or BMP files.
 
 Make sure to clone these dependencies along with the Trex.
 
