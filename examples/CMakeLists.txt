@@ -13,6 +13,7 @@ add_example_project(BasicAtlasGeneration)
 add_example_project(LoadAllChars)
 add_example_project(RenderSingleCharacters)
 add_example_project(RenderFontSDF)
+add_example_project(BasicTextShaping)
 
 # Add Trex library
 add_subdirectory(../ trexlib)
