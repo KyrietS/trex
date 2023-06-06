@@ -14,6 +14,7 @@ The text rendered by this library is every pixel identical to that rendered by t
 * **Platform Independent** - Trex is platform-independent and so are its dependencies.
 * **Easy Integration** - The library provides a simple and minimalistic API, making it easy to integrate text rendering capabilities into you projects.
 * **Static Library** - Trex uses CMake and it is configured as a static library.
+* **UTF-8 and Unicode Support** - Trex supports UTF-8 and Unicode text.
 
 ## Basic Example
 
