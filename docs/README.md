@@ -117,8 +117,8 @@ enum class RenderMode
     SDF
 };
 ```
-* `DEFAULT` - Render the text with the default, grayscale FreeType renderer.
-* `SDF` - Render the text with the SDF renderer. You will need a shader to render the text properly.
+* `DEFAULT` - Rasterize the text with the default, grayscale FreeType renderer.
+* `SDF` - rasterize the text with the SDF renderer. You will need a fragment shader to display the text properly.
 
 ## AtlasBitmap
 Represents a bitmap of the atlas.
