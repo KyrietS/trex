@@ -1,9 +1,0 @@
-[submodule "lib/freetype"]
-	path = lib/freetype
-	url = git@github.com:freetype/freetype.git
-[submodule "lib/harfbuzz"]
-	path = lib/harfbuzz
-	url = git@github.com:harfbuzz/harfbuzz.git
-[submodule "lib/stb"]
-	path = lib/stb
-	url = git@github.com:nothings/stb.git

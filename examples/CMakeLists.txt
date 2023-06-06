@@ -36,6 +36,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(raylib)
 set_target_properties(raylib PROPERTIES FOLDER "Raylib")
 
-# Copy fonts to build directory
+# Copy resources to build directory
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/fonts DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

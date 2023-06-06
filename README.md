@@ -48,12 +48,25 @@ for (const Trex::ShapedGlyph& glyph : glyphs)
 ## Getting Started
 To get started with Trex, follow the instructions below:
 
-1. Clone the repository recursively: `git clone --recurse-submodules https://github.com/KyrietS/trex.git`
+1. Clone the repository recursively: `git clone https://github.com/KyrietS/trex.git`
 2. In your project's CMakeLists.txt add:
     -  `add_subdirectory(path_to_trex)` 
     - `target_link_libraries(your_project trex)`
 3. Rebuild your project.
 4. You can use the provided examples in the [`examples`](examples/) folder as a reference of how to use Trex.
+
+Note: You can also use CMake's `FetchContent` module to download and configure Trex automatically.
+
+```cmake
+include(FetchContent)
+FetchContent_Declare(
+    trex
+    GIT_REPOSITORY https://github.com/KyrietS/trex.git
+    GIT_TAG        master
+)
+FetchContent_MakeAvailable(trex)
+target_link_libraries(your_project trex)
+```
 
 ## Showcase
 ### 512 x 512 ASCII atlas with glyphs from the [Roboto](https://fonts.google.com/specimen/Roboto) font (from 0 to 127).
@@ -75,7 +88,7 @@ Trex has the following dependencies:
 * HarfBuzz - A text shaping engine for accurate and complex text shaping.
 * stb_image_write - A header-only library for saving atlas bitmaps to PNG or BMP files.
 
-Make sure to clone these dependencies along with the Trex.
+These dependencies are fetched and configured automatically by CMake.
 
 Examples use [raylib](https://github.com/raysan5/raylib) library to render a text on the screen.
 

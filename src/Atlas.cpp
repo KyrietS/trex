@@ -8,8 +8,8 @@
 #include <map>
 #include <optional>
 #include <cassert>
-#include "stb_image_write.h"
-#include "../lib/freetype/src/sdf/ftsdfrend.h"
+#include <stb_image_write.h>
+#include <sdf/ftsdfrend.h>
 #include FT_FREETYPE_H
 #include FT_RENDER_H
 
