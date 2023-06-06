@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.11)
+include(FetchContent)
 
 project(TrexExamples)
 
@@ -27,7 +28,12 @@ foreach(dependency ${dependencies})
 endforeach()
 
 # Raylib
-add_subdirectory(raylib)
+FetchContent_Declare(
+    raylib
+    GIT_REPOSITORY https://github.com/raysan5/raylib.git
+    GIT_TAG        4.5.0
+)
+FetchContent_MakeAvailable(raylib)
 set_target_properties(raylib PROPERTIES FOLDER "Raylib")
 
 # Copy fonts to build directory
