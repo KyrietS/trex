@@ -36,7 +36,7 @@ void RenderShapedText(float cursorX, float cursorY, const Trex::ShapedGlyphs& gl
 		RenderGlyph(x, y, glyph.info, atlasTexture);
 
 		cursorX += glyph.xAdvance;
-		cursorX += glyph.yAdvance;
+		cursorY += glyph.yAdvance;
 	}
 }
 

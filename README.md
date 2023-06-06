@@ -41,7 +41,7 @@ for (const Trex::ShapedGlyph& glyph : glyphs)
     // ... atlas.GetBitmap() ...
 
     cursorX += glyph.xAdvance;
-    cursorX += glyph.yAdvance;
+    cursorY += glyph.yAdvance;
 }
 
 ```
