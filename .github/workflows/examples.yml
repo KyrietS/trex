@@ -1,5 +1,4 @@
 name: Examples
-run-name: Examples build triggered by ${{ github.event_name }} event
 
 on: [push, pull_request]
 
