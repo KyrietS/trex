@@ -1,6 +1,8 @@
 # Trex
 
-![Showcase hello world](docs/hello-world.png)
+![trex-banner](https://github.com/KyrietS/trex/assets/19170699/8ed15586-9545-4b98-9e83-ce827bac6f3f)
+[![Build](https://github.com/KyrietS/trex/actions/workflows/build.yml/badge.svg)](https://github.com/KyrietS/trex/actions/workflows/build.yml)
+[![Examples](https://github.com/KyrietS/trex/actions/workflows/examples.yml/badge.svg)](https://github.com/KyrietS/trex/actions/workflows/examples.yml)
 
 Trex is a font rasterizer, atlas generator and text shaping library written in C++. It uses [FreeType](https://github.com/freetype/freetype) and [HarfBuzz](https://github.com/harfbuzz/harfbuzz) libraries under the hood. It provides a simple API that makes it easy to integrate high quality typography into your application.
 
@@ -69,13 +71,14 @@ FetchContent_MakeAvailable(trex)
 target_link_libraries(your_project trex)
 ```
 
-## Showcase
-### 512 x 512 ASCII atlas with glyphs from the [Roboto](https://fonts.google.com/specimen/Roboto) font (from 0 to 127).
-<img src="docs/ascii-atlas.png" width="256">
+## Atlas Examples
 
-### 2048 x 1024 atlas with all glyphs from the [Roboto](https://fonts.google.com/specimen/Roboto) font.
-![Roboto atlas](docs/roboto-atlas.png)
+- 512 x 512 ASCII atlas with glyphs from the [Roboto](https://fonts.google.com/specimen/Roboto) font (from 0 to 127).
+![ASCII atlas](https://github.com/KyrietS/trex/assets/19170699/7780d0c5-259f-45db-a019-ad4388b2489b)
 
+
+- 2048 x 1024 atlas with all glyphs from the [Roboto](https://fonts.google.com/specimen/Roboto) font.
+![Roboto atlas](https://github.com/KyrietS/trex/assets/19170699/8dda53ff-9c58-4dcb-b565-5d5b55d6b431)
 The image above was cropped manually. Trex will always generate a square atlas. In this case it would be 2048 x 2048.
 
 ## Documentation
