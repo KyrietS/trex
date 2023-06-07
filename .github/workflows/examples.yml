@@ -1,0 +1,35 @@
+name: Examples
+run-name: Examples build triggered by ${{ github.event_name }} event
+
+on: [push, pull_request]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  linux:
+    runs-on: linux-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Environment for Raylib
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libglfw3 libglfw3-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev
+
+      - name: Configure CMake
+        run: cmake -B examples/build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+
+      - name: Build
+        run: cmake --build examples/build
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: cmake -B examples/build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+
+      - name: Build
+        run: cmake --build examples/build
