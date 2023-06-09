@@ -113,8 +113,11 @@ namespace Trex
 		// Use bsdf renderer instead of sdf renderer.
 		// See: https://freetype.org/freetype2/docs/reference/ft2-base_interface.html#ft_render_mode
 		// First I need to render the glyph with normal mode, then render it with sdf mode.
-		// But the bsdf renderer cannot handle the glyph with zero width or height (e.g. space).
 		FT_Error error = FT_Render_Glyph(glyph, FT_RENDER_MODE_NORMAL);
+
+        // But the bsdf renderer cannot handle the glyph with zero width or height (e.g. space).
+        // It is a result of a bug in FreeType. It is already fixed on master branch. (86d0ca24)
+        // In the future the `bool isGlyphEmpty` check will not be needed.
 		bool isGlyphEmpty = glyph->bitmap.width == 0 || glyph->bitmap.rows == 0;
 		if (mode == RenderMode::SDF and not isGlyphEmpty and not error)
 			error = FT_Render_Glyph(glyph, FT_RENDER_MODE_SDF);
