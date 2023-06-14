@@ -11,6 +11,7 @@ function(add_example_project TARGET_NAME)
 endfunction()
 
 add_example_project(Example_AtlasGeneration)
+add_example_project(Example_FontFromMemory)
 add_example_project(Example_LoadAllChars)
 add_example_project(Example_RenderSingleCharacters)
 add_example_project(Example_RenderFontSDF)

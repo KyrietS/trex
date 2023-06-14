@@ -53,9 +53,10 @@ namespace Trex
 	{
 	public:
 		Atlas(const std::string& fontPath, int fontSize, const Charset&, RenderMode = RenderMode::DEFAULT, int padding = 1);
-		Atlas(const Atlas&) = default;
+		Atlas(std::span<const uint8_t> fontData, int fontSize, const Charset&, RenderMode = RenderMode::DEFAULT, int padding = 1);
 
-		void SetDefaultGlyph(uint32_t codepoint);
+		void SetUnknownGlyph(uint32_t codepoint);
+		const Glyph& GetUnknownGlyph() const;
 
 		void SaveToFile(const std::string& path) const;
 		const Glyph& GetGlyphByCodepoint(uint32_t codepoint) const;
@@ -66,19 +67,20 @@ namespace Trex
 		int GetHeight() const { return m_Height; }
 		void UnloadBitmap() { m_Data.clear(); }
 
-		// Returns FreeType font face object.
-		FT_FaceRec_* GetFontFace() const { return m_Font.face; }
+		std::shared_ptr<const Font> GetFont() const { return m_Font; }
+		const AtlasGlyphs& GetGlyphs() const { return m_Glyphs; }
 
 	private:
+		void InitializeAtlas(const Charset&, RenderMode, int padding);
 		void GenerateAtlas(const Charset& charset, unsigned int atlasSize, int padding, RenderMode);
 		void InitializeDefaultGlyphIndex();
-		void SetDefaultGlyphIndex(uint32_t index);
+		void SetUnknownGlyphIndex(uint32_t index);
 
-		Font m_Font;
+		std::shared_ptr<Font> m_Font;
 		AtlasBitmap m_Data;
 		int m_Width;
 		int m_Height;
 		AtlasGlyphs m_Glyphs;
-		uint32_t m_DefaultGlyphIndex = 0;
+		uint32_t m_UnknownGlyphIndex = 0;
 	};
 }

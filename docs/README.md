@@ -18,8 +18,12 @@ Used internally by [Atlas](#atlas) to load a font file and generate a bitmap.
 ### Font::Font
 ```cpp
 Font::Font(const char* path);
+Font::Font(std::span<const uint8_t> data);
 ```
 * `path` - Path to the font file.
+* `data` - Font file data. This span should represent contiguous array of bytes.
+
+Note: `data` is copied into the font object. It is safe to destroy the original data after the font is created.
 
 ### Font::SetSize
 ```cpp
@@ -138,12 +142,16 @@ Represents a glyph atlas.
 ### Atlas::Atlas
 ```cpp
 Atlas(const std::string& fontPath, int fontSize, const Charset&, RenderMode, int padding);
+Atlas(std::span<const uint8_t> fontData, int fontSize, const Charset&, RenderMode, int padding);
 ```
 * `fontPath` - Path to the font file.
 * `fontSize` - Size of the font in pixels.
 * `charset` - Charset of the atlas. See: [Charset](#charset).
 * `renderMode` - Render mode of the atlas. See: [RenderMode](#rendermode).
 * `padding` - Padding between glyphs in the atlas. Default is 1.
+* `fontData` - Font file data. This span should represent contiguous array of bytes.
+
+Note: `Charset` and `fontData` are copied and then owned by the atlas. They can be safely destroyed after the atlas is created.
 
 ### Atlas::SaveToFile
 ```cpp
@@ -152,14 +160,20 @@ void Atlas::SaveToFile(const std::string& path) const;
 Save the atlas bitmap to a PNG or BMP file.
 * `path` - Path to the file. The file extension determines the format. It must be one of: `.png`, `.bmp`.
 
-### Atlas::SetDefaultGlyph
+### Atlas::SetUnknownGlyph
 ```cpp
-void Atlas::SetDefaultGlyph(uint32_t codepoint);
+void Atlas::SetUnknownGlyph(uint32_t codepoint);
 ```
-Set the default glyph to be used when a glyph is not found in the atlas.
+Set the unknown glyph to be used when a glyph is not found in the atlas.
 * `codepoint` - Unicode codepoint. If the codepoint is not found in the atlas, the function does nothing.
 
-If the default glyph is not set, the atlas will try to set it to some sensible value. 
+If the unknown glyph is not set, the atlas will try to set it to some sensible value. 
+
+### Atlas::GetUnknownGlyph
+```cpp
+const Glyph& Atlas::GetUnknownGlyph() const;
+```
+Get the unknown glyph.
 
 ### Atlas::GetGlyphByCodepoint
 ```cpp
@@ -200,11 +214,19 @@ void Atlas::UnloadBitmap();
 ```
 Unload the atlas bitmap from memory.
 
-### Atlas::GetFontFace
+### Atlas::GetFont
 ```cpp
-const FT_FaceRec_* Atlas::GetFontFace() const;
+const shared_ptr<const Font> Atlas::GetFontFace() const;
 ```
-Get the FreeType font face.
+Get the Font object. 
+
+Note: You should never use the `Font::face` without making sure that the Font object is still alive.
+
+### Atlas::GetGlyphs
+```cpp
+const AtlasGlyphs& Atlas::GetGlyphs() const;
+```
+Get the map of [Glyph](#glyph)s. See: [AtlasGlyphs](#atlasglyphs).
 
 ## ShapedGlyph
 Represents a shaped glyph.
@@ -238,7 +260,7 @@ Used to shape text into [ShapedGlyphs](#shaped-glyphs).
 ```cpp
 TextShaper::TextShaper(const Atlas& atlas);
 ```
-* `atlas` - [Atlas](#atlas) object.
+* `atlas` - [Atlas](#atlas) object. Can be cafely destroyed after the TextShaper is created.
 
 ### TextShaper::ShapeAscii
 ```cpp
@@ -254,7 +276,7 @@ ShapedGlyphs TextShaper::ShapeUtf8(const std::string& text);
 Shape UTF-8 text into [ShapedGlyphs](#shaped-glyphs).
 * `text` - byte sequence of UTF-8 encoded text.
 
-## TextShaper::ShapeUtf32
+### TextShaper::ShapeUtf32
 ```cpp
 ShapedGlyphs TextShaper::ShapeUtf32(const std::u32string& text);
 ```

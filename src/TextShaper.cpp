@@ -6,11 +6,12 @@ namespace Trex
 {
 
 	Trex::TextShaper::TextShaper(const Trex::Atlas& atlas)
-		: m_Atlas(atlas),
-		m_Buffer(hb_buffer_create()),
-		m_Font(hb_ft_font_create_referenced(atlas.GetFontFace()))
+		: m_Glyphs(atlas.GetGlyphs()),
+		  m_UnknownGlyph(atlas.GetUnknownGlyph()),
+		  m_AtlasFont(atlas.GetFont()),
+		  m_Buffer(hb_buffer_create()),
+		  m_Font(hb_ft_font_create_referenced(m_AtlasFont->face))
 	{
-		m_Atlas.UnloadBitmap(); // We don't need the bitmap here
 	}
 
 	Trex::TextShaper::~TextShaper()
@@ -51,6 +52,11 @@ namespace Trex
 		return GetShapedGlyphs();
 	}
 
+	Glyph TextShaper::GetAtlasGlyph(uint32_t index)
+	{
+		return m_Glyphs.contains(index) ? m_Glyphs.at(index) : m_UnknownGlyph;
+	}
+
 	ShapedGlyphs TextShaper::GetShapedGlyphs()
 	{
 		unsigned int glyphCount;
@@ -72,7 +78,7 @@ namespace Trex
 	{
 		unsigned int glyphIndex = glyphInfo.codepoint; // after shaping codepoint becomes glyph index
 		ShapedGlyph glyph;
-		glyph.info = m_Atlas.GetGlyphByIndex(glyphIndex);
+		glyph.info = GetAtlasGlyph(glyphIndex);
 		glyph.xOffset = glyphPos.x_offset / 64.0f;
 		glyph.yOffset = glyphPos.y_offset / 64.0f;
 		glyph.xAdvance = glyphPos.x_advance / 64.0f;

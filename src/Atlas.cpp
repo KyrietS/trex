@@ -6,7 +6,6 @@
 #include <ft2build.h>
 #include <stdexcept>
 #include <map>
-#include <optional>
 #include <cassert>
 #include <stb_image_write.h>
 #include <sdf/ftsdfrend.h>
@@ -115,9 +114,9 @@ namespace Trex
 		// First I need to render the glyph with normal mode, then render it with sdf mode.
 		FT_Error error = FT_Render_Glyph(glyph, FT_RENDER_MODE_NORMAL);
 
-        // But the bsdf renderer cannot handle the glyph with zero width or height (e.g. space).
-        // It is a result of a bug in FreeType. It is already fixed on master branch. (86d0ca24)
-        // In the future the `bool isGlyphEmpty` check will not be needed.
+		// But the bsdf renderer cannot handle the glyph with zero width or height (e.g. space).
+		// It is a result of a bug in FreeType. It is already fixed on master branch. (86d0ca24)
+		// In the future the `bool isGlyphEmpty` check will not be needed.
 		bool isGlyphEmpty = glyph->bitmap.width == 0 || glyph->bitmap.rows == 0;
 		if (mode == RenderMode::SDF and not isGlyphEmpty and not error)
 			error = FT_Render_Glyph(glyph, FT_RENDER_MODE_SDF);
@@ -243,7 +242,7 @@ namespace Trex
 		this->m_Width = atlasSize;
 		this->m_Height = atlasSize;
 
-		const auto& [bitmap, glyphs] = BuildAtlasBitmap(m_Font, charset, atlasSize, padding, mode);
+		const auto& [bitmap, glyphs] = BuildAtlasBitmap(*m_Font, charset, atlasSize, padding, mode);
 		this->m_Data = bitmap;
 		this->m_Glyphs = glyphs;
 	}
@@ -266,13 +265,24 @@ namespace Trex
 	}
 
 	Atlas::Atlas(const std::string& fontPath, int fontSize, const Charset& charset, RenderMode mode, int padding)
-		: m_Font(fontPath.c_str())
+		: m_Font(std::make_shared<Font>(fontPath.c_str()))
 	{
-		this->m_Font.SetSize(Pixels{ fontSize });
+		m_Font->SetSize(Pixels{ fontSize });
+		InitializeAtlas(charset, mode, padding);
+	}
 
-		const Charset filledCharset = charset.IsFull() ? GetFullCharsetFilled(charset, m_Font) : charset;
+	Atlas::Atlas(std::span<const uint8_t> fontData, int fontSize, const Charset& charset, RenderMode mode, int padding)
+		: m_Font(std::make_shared<Font>(fontData))
+	{
+		m_Font->SetSize(Pixels{ fontSize });
+		InitializeAtlas(charset, mode, padding);
+	}
 
-		auto metrics = GetGlyphsMetrics(m_Font.face, filledCharset, mode);
+	void Atlas::InitializeAtlas(const Trex::Charset& charset, Trex::RenderMode mode, int padding)
+	{
+		const Charset filledCharset = charset.IsFull() ? GetFullCharsetFilled(charset, *m_Font) : charset;
+
+		auto metrics = GetGlyphsMetrics(m_Font->face, filledCharset, mode);
 		auto atlasSize = GetAtlasSize(metrics, padding);
 
 		GenerateAtlas(filledCharset, atlasSize, padding, mode);
@@ -281,27 +291,32 @@ namespace Trex
 
 	void Atlas::InitializeDefaultGlyphIndex()
 	{
-		if (m_Glyphs.size() == 0)
+		if (m_Glyphs.empty())
 		{
 			throw std::runtime_error("Error: cannot set default glyph in empty atlas");
 		}
 
-		SetDefaultGlyphIndex(m_Glyphs.begin()->first); // Set first glyph as default
-		SetDefaultGlyphIndex(0); // Try to set 'undefined character code' as default
-		SetDefaultGlyph(0xFFFD); // Try to set 'unicode replacement character' as default
+		SetUnknownGlyphIndex(m_Glyphs.begin()->first); // Set first glyph as default
+		SetUnknownGlyphIndex(0); // Try to set 'undefined character code' as default
+		SetUnknownGlyph(0xFFFD); // Try to set 'unicode replacement character' as default
 	}
 
-	void Atlas::SetDefaultGlyph(uint32_t codepoint)
+	void Atlas::SetUnknownGlyph(uint32_t codepoint)
 	{
-		auto index = m_Font.GetGlyphIndex(codepoint);
-		SetDefaultGlyphIndex(index);
+		auto index = m_Font->GetGlyphIndex(codepoint);
+		SetUnknownGlyphIndex(index);
 	}
 
-	void Atlas::SetDefaultGlyphIndex(uint32_t index)
+	const Glyph& Atlas::GetUnknownGlyph() const
+	{
+		return GetGlyphByIndex(m_UnknownGlyphIndex);
+	}
+
+	void Atlas::SetUnknownGlyphIndex(uint32_t index)
 	{
 		if (m_Glyphs.contains(index))
 		{
-			m_DefaultGlyphIndex = index;
+			m_UnknownGlyphIndex = index;
 		}
 	}
 
@@ -325,12 +340,12 @@ namespace Trex
 
 	const Glyph& Atlas::GetGlyphByCodepoint(uint32_t codepoint) const
 	{
-		return GetGlyphByIndex(m_Font.GetGlyphIndex(codepoint));
+		return GetGlyphByIndex(m_Font->GetGlyphIndex(codepoint));
 	}
 
 	const Glyph& Atlas::GetGlyphByIndex(uint32_t index) const
 	{
-		return m_Glyphs.contains(index) ? m_Glyphs.at(index) : m_Glyphs.at(m_DefaultGlyphIndex);
+		return m_Glyphs.contains(index) ? m_Glyphs.at(index) : m_Glyphs.at(m_UnknownGlyphIndex);
 	}
 
 }

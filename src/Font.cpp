@@ -35,16 +35,26 @@ namespace Trex
 		SetSize(Points{ 12 }); // Default size
 	}
 
-	Font::Font(const Font& font)
+	Font::Font(std::span<const uint8_t> data)
+		: fontData(std::vector<uint8_t>(data.begin(), data.end()))
 	{
-		FT_Reference_Face(font.face);
-		face = font.face;
+		FT_Long faceIndex = 0; // Take the first face in the font file
+		FT_Library library = GetFTLibrary();
+
+		if(FT_New_Memory_Face(library, reinterpret_cast<const FT_Byte*>(fontData.data()), fontData.size(), faceIndex, &face))
+		{
+			throw std::runtime_error("Error: could not load font");
+		}
+
+		SetSize(Points{ 12 }); // Default size
 	}
 
 	Font::Font(Font&& other) noexcept
 	{
+		FT_Reference_Face(other.face);
 		face = other.face;
 		other.face = nullptr;
+		fontData = std::move(other.fontData);
 	}
 
 	Font::~Font()
@@ -75,18 +85,4 @@ namespace Trex
 		return FT_Get_Char_Index(face, codepoint);
 	}
 
-	Font& Font::operator=(const Font& font) noexcept
-	{
-		FT_Reference_Face(font.face);
-		face = font.face;
-		return *this;
-	}
-
-	Font& Font::operator=(Font&& other) noexcept
-	{
-		face = other.face;
-		other.face = nullptr;
-
-		return *this;
-	}
 }
