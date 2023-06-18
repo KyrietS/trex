@@ -2,15 +2,16 @@
 
 ## Table of Contents
 1. [Font](#font)
-3. [Charset](#charset)
+2. [Charset](#charset)
 3. [Glyph](#glyph)
-3. [RenderMode](#rendermode)
-2. [AtlasBitmap](#atlasbitmap)
-2. [AtlasGlyphs](#atlasglyphs)
-2. [Atlas](#atlas)
-4. [ShapedGlyph](#shapedglyph)
-4. [ShapedGlyphs](#shapedglyphs)
-3. [TextShaper](#textshaper)
+4. [RenderMode](#rendermode)
+5. [AtlasBitmap](#atlasbitmap)
+6. [AtlasGlyphs](#atlasglyphs)
+7. [Atlas](#atlas)
+8. [ShapedGlyph](#shapedglyph)
+9. [ShapedGlyphs](#shapedglyphs)
+10. [TextMeasurement](#textmeasurement)
+11. [TextShaper](#textshaper)
 
 ## Font
 Used internally by [Atlas](#atlas) to load a font file and generate a bitmap.
