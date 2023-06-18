@@ -21,6 +21,12 @@ namespace Trex
 
 	using ShapedGlyphs = std::vector<ShapedGlyph>;
 
+	struct TextMeasurement
+	{
+		float width, height; // Width and height of the text. Measured from the top-left corner (offset)
+		float xOffset, yOffset; // Offset from baseline origin to left/top
+		float xAdvance, yAdvance; // Advance from baseline origin to the end of the text (including trailing advance)
+	};
 
 	class TextShaper
 	{
@@ -32,6 +38,8 @@ namespace Trex
 		ShapedGlyphs ShapeUtf8(const std::string& text);
 		ShapedGlyphs ShapeUtf32(const std::u32string& text);
 		ShapedGlyphs ShapeUnicode(const std::vector<uint32_t>& codepoints);
+
+		TextMeasurement Measure(const ShapedGlyphs&);
 
 	private:
 		Glyph GetAtlasGlyph(uint32_t glyphIndex);

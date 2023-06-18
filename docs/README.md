@@ -228,7 +228,7 @@ const AtlasGlyphs& Atlas::GetGlyphs() const;
 ```
 Get the map of [Glyph](#glyph)s. See: [AtlasGlyphs](#atlasglyphs).
 
-## ShapedGlyph
+### ShapedGlyph
 Represents a shaped glyph.
 ```cpp
 struct ShapedGlyph
@@ -252,6 +252,23 @@ Represents a vector of [ShapedGlyph](#shaped-glyph)s.
 ```cpp
 using ShapedGlyphs = std::vector<ShapedGlyph>;
 ```
+
+### TextMeasurement
+Represents the dimension of a shaped text.
+```cpp
+struct TextMeasurement
+{
+    float width, height;
+    float xOffset, yOffset;
+    float xAdvance, yAdvance;
+};
+```
+* `width` - Width of the bounding box of the text.
+* `height` - Height of the bounding box of the text.
+* `xOffset` - Offset from the baseline origin to the leftmost edge of the bounding box.
+* `yOffset` - Offset from the baseline origin to the topmost edge of the bounding box.
+* `xAdvance` - Advance from the baseline origin to the end of the text (including advance of the last glyph).
+* `yAdvance` - Advance from the baseline origin to the end of the text (including advance of the last glyph).
 
 ## TextShaper
 Used to shape text into [ShapedGlyphs](#shaped-glyphs).
@@ -292,3 +309,9 @@ ShapedGlyphs TextShaper::ShapeUnicode(const std::vector<uint32_t>& codepoints);
 Shape Unicode text into [ShapedGlyphs](#shaped-glyphs).
 * `codepoints` - Unicode codepoints.
 
+### TextShaper::Measure
+```cpp
+TextMeasurement TextShaper::Measure(const ShapedGlyphs& glyphs);
+```
+Measure the dimensions of a shaped text. Returns a [TextMeasurement](#textmeasurement) object.
+* `glyphs` - [ShapedGlyphs](#shaped-glyphs).

@@ -1,6 +1,7 @@
 #include "TextShaper.hpp"
 #include "hb.h"
 #include "hb-ft.h"
+#include <limits>
 
 namespace Trex
 {
@@ -50,6 +51,38 @@ namespace Trex
 		hb_shape(m_Font, m_Buffer, nullptr, 0);
 
 		return GetShapedGlyphs();
+	}
+
+	TextMeasurement TextShaper::Measure(const Trex::ShapedGlyphs& glyphs)
+	{
+		float minY = std::numeric_limits<float>::max();
+		float maxY = std::numeric_limits<float>::min();
+		float minX = std::numeric_limits<float>::max();
+		float maxX = std::numeric_limits<float>::min();
+		float cursorX = 0.0f;
+		float cursorY = 0.0f;
+		for (const auto& glyph : glyphs)
+		{
+			float x = cursorX + glyph.xOffset + (float)glyph.info.bearingX;
+			float y = cursorY + glyph.yOffset - (float)glyph.info.bearingY;
+
+			minX = std::min(minX, x);
+			maxX = std::max(maxX, x + (float)glyph.info.width);
+			minY = std::min(minY, y);
+			maxY = std::max(maxY, y + (float)glyph.info.height);
+
+			cursorX += glyph.xAdvance;
+			cursorY += glyph.yAdvance;
+		}
+
+		return TextMeasurement {
+				.width = maxX - minX,
+				.height = maxY - minY,
+				.xOffset = minX,
+				.yOffset = minY,
+				.xAdvance = cursorX,
+				.yAdvance = cursorY
+		};
 	}
 
 	Glyph TextShaper::GetAtlasGlyph(uint32_t index)

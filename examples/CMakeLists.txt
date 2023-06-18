@@ -16,6 +16,7 @@ add_example_project(Example_LoadAllChars)
 add_example_project(Example_RenderSingleCharacters)
 add_example_project(Example_RenderFontSDF)
 add_example_project(Example_TextShaping)
+add_example_project(Example_MeasureText)
 
 # Add Trex library
 add_subdirectory(../ trexlib)
