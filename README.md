@@ -51,12 +51,12 @@ for (const Trex::ShapedGlyph& glyph : glyphs)
 ## Getting Started
 To get started with Trex, follow the instructions below:
 
-1. Clone the repository recursively: `git clone https://github.com/KyrietS/trex.git`
+1. Clone the repository: `git clone https://github.com/KyrietS/trex.git`
 2. In your project's CMakeLists.txt add:
-    -  `add_subdirectory(path_to_trex)` 
-    - `target_link_libraries(your_project trex)`
+    - `add_subdirectory(path_to_trex)`
+    - `target_link_libraries(your_target trex)`
 3. Rebuild your project.
-4. You can use the provided examples in the [`examples`](examples/) folder as a reference of how to use Trex.
+4. Check the [docs/](docs/) to learn how to use Trex. You can use the provided examples in the [`examples`](examples/) folder as a reference.
 
 Note: You can also use CMake's `FetchContent` module to download and configure Trex automatically.
 
@@ -68,7 +68,7 @@ FetchContent_Declare(
     GIT_TAG        master
 )
 FetchContent_MakeAvailable(trex)
-target_link_libraries(your_project trex)
+target_link_libraries(your_target trex)
 ```
 
 ## Atlas Examples
