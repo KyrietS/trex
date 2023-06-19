@@ -1,16 +1,17 @@
 #include "Atlas.hpp"
-#include <cstdint>
-#include <vector>
-#include <string_view>
 #include "Font.hpp"
-#include <ft2build.h>
-#include <stdexcept>
-#include <map>
-#include <cassert>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
+#include <ft2build.h>
 #include <sdf/ftsdfrend.h>
 #include FT_FREETYPE_H
 #include FT_RENDER_H
+#include <cstdint>
+#include <vector>
+#include <string_view>
+#include <stdexcept>
+#include <map>
+#include <cassert>
 
 namespace Trex
 {
