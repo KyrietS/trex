@@ -1,7 +1,5 @@
 #include "Atlas.hpp"
 #include "Font.hpp"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include <stb_image_write.h>
 #include <ft2build.h>
 #include <sdf/ftsdfrend.h>
 #include FT_FREETYPE_H
@@ -12,6 +10,10 @@
 #include <stdexcept>
 #include <map>
 #include <cassert>
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#define	STB_IMAGE_WRITE_STATIC
+#include <stb_image_write.h>
 
 namespace Trex
 {
