@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  windows:
+    name: Windows release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: build
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --target trex --config Release
+      - name: pack binary
+        run: |
+          move build\Release\trex.lib .
+          7z a -tzip trex.zip trex.lib
+      - name: upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: trex-windows-msvc-x64
+          path: trex.zip
+
+  linux:
+    name: Linux release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: build
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --target trex --config Release
+      - name: pack binary
+        run: |
+          mv build/trex.a .
+          tar -czf trex.tar.gz trex.a
+      - name: upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: trex-linux-gcc-x64
+          path: trex.tar.gz
