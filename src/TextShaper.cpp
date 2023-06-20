@@ -55,6 +55,9 @@ namespace Trex
 
 	TextMeasurement TextShaper::Measure(const Trex::ShapedGlyphs& glyphs)
 	{
+		if (glyphs.empty())
+			return TextMeasurement{}; // Filled with zeros
+
 		float minY = std::numeric_limits<float>::max();
 		float maxY = std::numeric_limits<float>::min();
 		float minX = std::numeric_limits<float>::max();
