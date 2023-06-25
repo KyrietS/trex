@@ -6,8 +6,8 @@ Image GetAtlasAsBitmapImage(Trex::Atlas& atlas)
 {
 	Image atlasImage;
 	atlasImage.data = atlas.GetBitmap().data(); // pointer to the atlas bitmap data
-	atlasImage.width = atlas.GetWidth(); // width of the atlas bitmap
-	atlasImage.height = atlas.GetHeight(); // height of the atlas bitmap
+	atlasImage.width = (int)atlas.GetWidth(); // width of the atlas bitmap
+	atlasImage.height = (int)atlas.GetHeight(); // height of the atlas bitmap
 	atlasImage.mipmaps = 1;
 	atlasImage.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE; // atlas bitmap format is always 1 byte per pixel (grayscale)
 	return atlasImage;
@@ -30,8 +30,8 @@ void RenderShapedText(float cursorX, float cursorY, const Trex::ShapedGlyphs& gl
 {
 	for (const auto& glyph : glyphs)
 	{
-		float x = cursorX + glyph.xOffset + glyph.info.bearingX;
-		float y = cursorY + glyph.yOffset - glyph.info.bearingY;
+		float x = cursorX + glyph.xOffset + (float)glyph.info.bearingX;
+		float y = cursorY + glyph.yOffset - (float)glyph.info.bearingY;
 
 		RenderGlyph(x, y, glyph.info, atlasTexture);
 
@@ -48,7 +48,7 @@ int main()
 	Trex::Atlas atlas(FONT_PATH, FONT_SIZE, Trex::Charset::Full());
 	Trex::TextShaper shaper(atlas);
 	Trex::ShapedGlyphs shapedGlyphs = shaper.ShapeAscii("Hello, World!");
-	Trex::TextMeasurement textMeas = shaper.Measure(shapedGlyphs);
+	Trex::TextMeasurement textMeas = Trex::TextShaper::Measure(shapedGlyphs);
 
 	InitWindow(600, 250, "MeasureText Example");
 
@@ -64,13 +64,13 @@ int main()
 		RenderShapedText(50, 100, shapedGlyphs, atlasTexture);
 
 		// Draw cursor before the text
-		DrawRectangle(50, 100 + textMeas.yOffset, 1, textMeas.height, RED);
+		DrawRectangle(50, 100 + (int)textMeas.yOffset, 1, (int)textMeas.height, RED);
 
 		// Draw filled rectangle over the text
-		DrawRectangle(50 + textMeas.xOffset, 100 + textMeas.yOffset, textMeas.width, textMeas.height, Fade(GREEN, 0.2f));
+		DrawRectangle(50 + (int)textMeas.xOffset, 100 + (int)textMeas.yOffset, (int)textMeas.width, (int)textMeas.height, Fade(GREEN, 0.2f));
 
 		// Draw cursor after the text
-		DrawRectangle(50 + textMeas.xAdvance, 100 + textMeas.yAdvance + textMeas.yOffset, 1, textMeas.height, BLUE);
+		DrawRectangle(50 + (int)textMeas.xAdvance, 100 + (int)textMeas.yAdvance + (int)textMeas.yOffset, 1, (int)textMeas.height, BLUE);
 
 		EndDrawing();
 	}

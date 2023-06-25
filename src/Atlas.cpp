@@ -17,7 +17,7 @@
 
 namespace Trex
 {
-	Charset::Charset(std::string codepoints)
+	Charset::Charset(const std::string& codepoints)
 	{
 		m_Charset.reserve(codepoints.size());
 		for (const char codepoint : codepoints)
@@ -54,7 +54,7 @@ namespace Trex
 
 	Glyph GetGlyphInfo(FT_GlyphSlot ft_glyph, int x, int y, uint32_t codepoint)
 	{
-		Glyph glyph;
+		Glyph glyph{};
 		glyph.x = x;
 		glyph.y = y;
 		glyph.codepoint = codepoint;
@@ -71,7 +71,7 @@ namespace Trex
 	{
 		// Get spread value from SDF renderer module
 		FT_Library library = glyph->library;
-		SDF_Renderer sdfModule = (SDF_Renderer)FT_Get_Module(library, "sdf");
+		auto sdfModule = reinterpret_cast<SDF_Renderer>(FT_Get_Module(library, "sdf"));
 		FT_UInt spread = sdfModule->spread;
 
 		// Adjust glyph size. See ftsdfrend.c for more details. (function: ft_sdf_render)
@@ -93,19 +93,6 @@ namespace Trex
 		}
 
 		return fontFace->glyph;
-	}
-
-	FT_Render_Mode GetFreeTypeRenderMode(RenderMode mode)
-	{
-		switch (mode)
-		{
-		case RenderMode::DEFAULT:
-			return FT_RENDER_MODE_NORMAL;
-		case RenderMode::SDF:
-			return FT_RENDER_MODE_SDF;
-		default:
-			throw std::runtime_error("Error: unknown render mode!");
-		}
 	}
 
 	FT_GlyphSlot LoadGlyphWithRender(FT_Face fontFace, uint32_t codepoint, RenderMode mode)
@@ -169,14 +156,14 @@ namespace Trex
 			if (x + glyphWidth > atlasSize) // Next row
 			{
 				x = 0;
-				y += maxHeight;
+				y += static_cast<int>(maxHeight);
 				maxHeight = 0;
 			}
 			if (y + glyphHeight > atlasSize)
 			{
 				return false;
 			}
-			x += glyphWidth;
+			x += static_cast<int>(glyphWidth);
 		}
 		return true;
 	}
@@ -199,17 +186,17 @@ namespace Trex
 		AtlasGlyphs glyphs;
 
 		FT_Face face = font.face;
-		unsigned int atlasX = 0;
-		unsigned int atlasY = 0;
-		unsigned int maxHeight = 0;
+		int atlasX = 0;
+		int atlasY = 0;
+		int maxHeight = 0;
 		for (uint32_t codepoint : charset.Codepoints())
 		{
 			auto glyph = LoadGlyphWithRender(face, codepoint, mode);
 			unsigned int glyphWidth = glyph->bitmap.width;
 			unsigned int glyphHeight = glyph->bitmap.rows;
 
-			unsigned int glyphWidthPadding = glyphWidth + padding * 2;
-			unsigned int glyphHeightPadding = glyphHeight + padding * 2;
+			int glyphWidthPadding = static_cast<int>(glyphWidth) + padding * 2;
+			int glyphHeightPadding = static_cast<int>(glyphHeight) + padding * 2;
 
 			maxHeight = std::max(maxHeight, glyphHeightPadding);
 			// If we are out of atlas bounds, go to the next line
@@ -224,8 +211,8 @@ namespace Trex
 			{
 				for (unsigned int glyphX = 0; glyphX < glyphWidth; ++glyphX)
 				{
-					int atlasBitmapIndex = (atlasY + glyphY + padding) * atlasSize + (atlasX + glyphX + padding);
-					int glyphIndex = glyphY * glyphWidth + glyphX;
+					unsigned int atlasBitmapIndex = (atlasY + glyphY + padding) * atlasSize + (atlasX + glyphX + padding);
+					unsigned int glyphIndex = glyphY * glyphWidth + glyphX;
 					bitmap.at(atlasBitmapIndex) = 255 - glyph->bitmap.buffer[glyphIndex];
 				}
 			}
@@ -250,7 +237,7 @@ namespace Trex
 		this->m_Glyphs = glyphs;
 	}
 
-	Charset GetFullCharsetFilled(const Charset& charset, Font& font)
+	Charset GetFullCharsetFilled(Font &font)
 	{
 		std::vector<uint32_t> codepoints;
 		codepoints.push_back(0xFFFF); // Add unknown glyph. It will have index 0.
@@ -283,7 +270,7 @@ namespace Trex
 
 	void Atlas::InitializeAtlas(const Trex::Charset& charset, Trex::RenderMode mode, int padding)
 	{
-		const Charset filledCharset = charset.IsFull() ? GetFullCharsetFilled(charset, *m_Font) : charset;
+		const Charset filledCharset = charset.IsFull() ? GetFullCharsetFilled(*m_Font) : charset;
 
 		auto metrics = GetGlyphsMetrics(m_Font->face, filledCharset, mode);
 		auto atlasSize = GetAtlasSize(metrics, padding);
@@ -326,14 +313,16 @@ namespace Trex
 	void Atlas::SaveToFile(const std::string& path) const
 	{
 		constexpr int GRAY_SCALE = 1;
+        const int width = static_cast<int>(m_Width);
+        const int height = static_cast<int>(m_Height);
 
 		if (path.ends_with(".png"))
 		{
-			stbi_write_png(path.c_str(), m_Width, m_Height, GRAY_SCALE, m_Data.data(), m_Width);
+			stbi_write_png(path.c_str(), width, height, GRAY_SCALE, m_Data.data(), width);
 		}
 		else if (path.ends_with(".bmp"))
 		{
-			stbi_write_bmp(path.c_str(), m_Width, m_Height, GRAY_SCALE, m_Data.data());
+			stbi_write_bmp(path.c_str(), width, height, GRAY_SCALE, m_Data.data());
 		}
 		else
 		{

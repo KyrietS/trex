@@ -5,8 +5,8 @@ Image GetAtlasAsBitmapImage(Trex::Atlas& atlas)
 {
 	Image atlasImage;
 	atlasImage.data = atlas.GetBitmap().data(); // pointer to the atlas bitmap data
-	atlasImage.width = atlas.GetWidth(); // width of the atlas bitmap
-	atlasImage.height = atlas.GetHeight(); // height of the atlas bitmap
+	atlasImage.width = (int)atlas.GetWidth(); // width of the atlas bitmap
+	atlasImage.height = (int)atlas.GetHeight(); // height of the atlas bitmap
 	atlasImage.mipmaps = 1;
 	atlasImage.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE; // atlas bitmap format is always 1 byte per pixel (grayscale)
 	return atlasImage;

@@ -31,7 +31,7 @@ namespace Trex
 	class TextShaper
 	{
 	public:
-		TextShaper(const Atlas& atlas);
+		explicit TextShaper(const Atlas& atlas);
 		~TextShaper();
 
 		ShapedGlyphs ShapeAscii(const std::string& text);
@@ -39,7 +39,7 @@ namespace Trex
 		ShapedGlyphs ShapeUtf32(const std::u32string& text);
 		ShapedGlyphs ShapeUnicode(const std::vector<uint32_t>& codepoints);
 
-		TextMeasurement Measure(const ShapedGlyphs&);
+		static TextMeasurement Measure(const ShapedGlyphs&);
 
 	private:
 		Glyph GetAtlasGlyph(uint32_t glyphIndex);

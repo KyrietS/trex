@@ -12,7 +12,7 @@ namespace Trex
 	class Charset
 	{
 	public:
-		explicit Charset(std::string codepoints);
+		explicit Charset(const std::string& codepoints);
 		explicit Charset(uint32_t last);
 		explicit Charset(uint32_t first, uint32_t last);
 		explicit Charset(std::vector<uint32_t> codepoints);
@@ -21,7 +21,7 @@ namespace Trex
 		Charset(const Charset&) = default;
 		Charset& operator=(const Charset&) = default;
 
-		static Charset Full() { return Charset(); };
+		static Charset Full() { return {}; };
 		static Charset Ascii() { return Charset( 0, 127 ); };
 
 		size_t Size() const { return m_Charset.size(); }
@@ -37,10 +37,10 @@ namespace Trex
 
 	struct Glyph
 	{
-		int codepoint; // Unicode codepoint
-		int glyphIndex; // Index of the glyph in the font
+		unsigned int codepoint; // Unicode codepoint
+		unsigned int glyphIndex; // Index of the glyph in the font
 		int x, y; // Top left corner of the glyph in the atlas
-		int width, height;
+		unsigned int width, height;
 		int bearingX, bearingY; 
 	};
 
@@ -63,9 +63,8 @@ namespace Trex
 		const Glyph& GetGlyphByIndex(uint32_t index) const;
 		const AtlasBitmap& GetBitmap() const { return m_Data; }
 		AtlasBitmap& GetBitmap() { return m_Data; }
-		int GetWidth() const { return m_Width; }
-		int GetHeight() const { return m_Height; }
-		void UnloadBitmap() { m_Data.clear(); }
+		unsigned int GetWidth() const { return m_Width; }
+		unsigned int GetHeight() const { return m_Height; }
 
 		std::shared_ptr<const Font> GetFont() const { return m_Font; }
 		const AtlasGlyphs& GetGlyphs() const { return m_Glyphs; }
@@ -78,8 +77,8 @@ namespace Trex
 
 		std::shared_ptr<Font> m_Font;
 		AtlasBitmap m_Data;
-		int m_Width;
-		int m_Height;
+		unsigned int m_Width{};
+		unsigned int m_Height{};
 		AtlasGlyphs m_Glyphs;
 		uint32_t m_UnknownGlyphIndex = 0;
 	};

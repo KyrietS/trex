@@ -113,12 +113,12 @@ namespace Trex
 	ShapedGlyph TextShaper::GetShapedGlyph(const hb_glyph_info_t& glyphInfo, const hb_glyph_position_t& glyphPos)
 	{
 		unsigned int glyphIndex = glyphInfo.codepoint; // after shaping codepoint becomes glyph index
-		ShapedGlyph glyph;
+		ShapedGlyph glyph{};
 		glyph.info = GetAtlasGlyph(glyphIndex);
-		glyph.xOffset = glyphPos.x_offset / 64.0f;
-		glyph.yOffset = glyphPos.y_offset / 64.0f;
-		glyph.xAdvance = glyphPos.x_advance / 64.0f;
-		glyph.yAdvance = glyphPos.y_advance / 64.0f;
+		glyph.xOffset = static_cast<float>(glyphPos.x_offset) / 64.0f;
+		glyph.yOffset = static_cast<float>(glyphPos.y_offset) / 64.0f;
+		glyph.xAdvance = static_cast<float>(glyphPos.x_advance) / 64.0f;
+		glyph.yAdvance = static_cast<float>(glyphPos.y_advance) / 64.0f;
 		return glyph;
 	}
 
