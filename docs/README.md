@@ -310,6 +310,12 @@ ShapedGlyphs TextShaper::ShapeUnicode(const std::vector<uint32_t>& codepoints);
 Shape Unicode text into [ShapedGlyphs](#shaped-glyphs).
 * `codepoints` - Unicode codepoints.
 
+### TextShaper::GetBaselineHeight
+```cpp
+int TextShaper::GetBaselineHeight() const;
+```
+Get the distance (in pixels) from one baseline to the next. This value is scaled according to the font size and it is always rounded to the nearest integer.
+
 ### TextShaper::Measure
 ```cpp
 TextMeasurement TextShaper::Measure(const ShapedGlyphs& glyphs);

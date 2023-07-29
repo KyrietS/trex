@@ -67,8 +67,13 @@ int main()
 		BeginDrawing();
 		ClearBackground(WHITE);
 
-		RenderShapedText(50, 100, asciiGlyphs, atlasTexture);
-		RenderShapedText(50, 200, unicodeGlyphs, atlasTexture);
+		// First line of text
+		float cursorY = 100.0f;
+		RenderShapedText(50, cursorY, asciiGlyphs, atlasTexture);
+
+		// Second line of text
+		cursorY += shaper.GetBaselineHeight();
+		RenderShapedText(50, cursorY, unicodeGlyphs, atlasTexture);
 
 		EndDrawing();
 	}
