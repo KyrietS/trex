@@ -63,6 +63,8 @@ int main()
 
 		RenderShapedText(50, 100, shapedGlyphs, atlasTexture);
 
+		DrawCircle(50, 100, 3, VIOLET);
+
 		// Draw cursor before the text
 		DrawRectangle(50, 100 + (int)textMeas.yOffset, 1, (int)textMeas.height, RED);
 

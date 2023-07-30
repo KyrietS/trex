@@ -219,6 +219,8 @@ namespace Trex
 
 			int x0 = atlasX + padding;
 			int y0 = atlasY + padding;
+
+			// Multiple glyphs can have index=0.
 			glyphs[glyph->glyph_index] = GetGlyphInfo(glyph, x0, y0, codepoint);
 
 			atlasX += glyphWidthPadding;
@@ -313,8 +315,8 @@ namespace Trex
 	void Atlas::SaveToFile(const std::string& path) const
 	{
 		constexpr int GRAY_SCALE = 1;
-        const int width = static_cast<int>(m_Width);
-        const int height = static_cast<int>(m_Height);
+		const int width = static_cast<int>(m_Width);
+		const int height = static_cast<int>(m_Height);
 
 		if (path.ends_with(".png"))
 		{
