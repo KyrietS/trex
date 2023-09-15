@@ -39,7 +39,7 @@ namespace Trex
 		ShapedGlyphs ShapeUtf32(const std::u32string& text);
 		ShapedGlyphs ShapeUnicode(const std::vector<uint32_t>& codepoints);
 
-		int GetBaselineHeight() const;
+		FontMetrics GetFontMetrics() const;
 
 		static TextMeasurement Measure(const ShapedGlyphs&);
 

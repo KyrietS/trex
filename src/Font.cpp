@@ -86,4 +86,13 @@ namespace Trex
 		return FT_Get_Char_Index(face, codepoint);
 	}
 
+	FontMetrics Font::GetMetrics() const
+	{
+		FontMetrics metrics;
+		metrics.ascender = face->size->metrics.ascender / 64;
+		metrics.descender = face->size->metrics.descender / 64;
+		metrics.height = face->size->metrics.height / 64;
+		return metrics;
+	}
+
 }

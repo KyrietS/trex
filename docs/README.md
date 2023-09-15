@@ -2,16 +2,17 @@
 
 ## Table of Contents
 1. [Font](#font)
-2. [Charset](#charset)
-3. [Glyph](#glyph)
-4. [RenderMode](#rendermode)
-5. [AtlasBitmap](#atlasbitmap)
-6. [AtlasGlyphs](#atlasglyphs)
-7. [Atlas](#atlas)
-8. [ShapedGlyph](#shapedglyph)
-9. [ShapedGlyphs](#shapedglyphs)
-10. [TextMeasurement](#textmeasurement)
-11. [TextShaper](#textshaper)
+2. [FontMetrics](#fontmetrics)
+3. [Charset](#charset)
+4. [Glyph](#glyph)
+5. [RenderMode](#rendermode)
+6. [AtlasBitmap](#atlasbitmap)
+7. [AtlasGlyphs](#atlasglyphs)
+8. [Atlas](#atlas)
+9. [ShapedGlyph](#shapedglyph)
+10. [ShapedGlyphs](#shapedglyphs)
+11. [TextMeasurement](#textmeasurement)
+12. [TextShaper](#textshaper)
 
 ## Font
 Used internally by [Atlas](#atlas) to load a font file and generate a bitmap.
@@ -36,12 +37,34 @@ Change font size. The default font size after loading is 12pt.
 
 Note: After the atlas is generated, the font size must not be changed.
 
-### GetGlyphIndex
+### Font::GetGlyphIndex
 ```cpp
 uint32_t Font::GetGlyphIndex(uint32_t codepoint) const;
 ```
 Get the glyph index of a codepoint. Returns 0 if the codepoint is not supported by the font.
 * `codepoint` - Unicode codepoint.
+
+### Font::GetMetrics
+```cpp
+FontMetrics Font::GetMetrics() const;
+```
+Get the font metrics. See: [FontMetrics](#fontmetrics).
+
+## FontMetrics
+Represents the metrics of a font.
+```cpp
+struct FontMetrics
+{
+    int ascender;
+    int descender;
+    int height;
+};
+```
+* `ascender` - Max distance (in pixels) from baseline to top of a glyph (positive value)
+* `descender` - Max distance (in pixels) from baseline to the bottom of a glyph (negative value)
+* `height` - Distance (in pixels) from one baseline to the next.
+
+These values are always scaled according to the font size and they are rounded to the nearest integer.
 
 ## Charset
 Represents a set of supported codepoints.
@@ -249,7 +272,7 @@ struct ShapedGlyph
 * `info` - [Glyph](#glyph) info object.
 
 ### ShapedGlyphs
-Represents a vector of [ShapedGlyph](#shaped-glyph)s.
+Represents a vector of [ShapedGlyph](#shapedglyph)s.
 ```cpp
 using ShapedGlyphs = std::vector<ShapedGlyph>;
 ```
@@ -272,7 +295,7 @@ struct TextMeasurement
 * `yAdvance` - Advance from the baseline origin to the end of the text (including advance of the last glyph).
 
 ## TextShaper
-Used to shape text into [ShapedGlyphs](#shaped-glyphs).
+Used to shape text into [ShapedGlyphs](#shapedglyphs).
 
 ### TextShaper::TextShaper
 ```cpp
@@ -284,21 +307,21 @@ TextShaper::TextShaper(const Atlas& atlas);
 ```cpp
 ShapedGlyphs TextShaper::ShapeAscii(const std::string& text);
 ```
-Shape ASCII text into [ShapedGlyphs](#shaped-glyphs).
+Shape ASCII text into [ShapedGlyphs](#shapedglyphs).
 * `text` - ASCII text.
 
 ### TextShaper::ShapeUtf8
 ```cpp
 ShapedGlyphs TextShaper::ShapeUtf8(const std::string& text);
 ```
-Shape UTF-8 text into [ShapedGlyphs](#shaped-glyphs).
+Shape UTF-8 text into [ShapedGlyphs](#shapedglyphs).
 * `text` - byte sequence of UTF-8 encoded text.
 
 ### TextShaper::ShapeUtf32
 ```cpp
 ShapedGlyphs TextShaper::ShapeUtf32(const std::u32string& text);
 ```
-Shape UTF-32 text into [ShapedGlyphs](#shaped-glyphs).
+Shape UTF-32 text into [ShapedGlyphs](#shapedglyphs).
 * `text` - UTF-32 encoded text. Each character is a Unicode codepoint.
 
 Note: u32string must be converted to a vector of uint32_t before shaping. It allocates additional memory and copies the string. Use ShapeUnicode function whenever possible.
@@ -307,18 +330,18 @@ Note: u32string must be converted to a vector of uint32_t before shaping. It all
 ```cpp
 ShapedGlyphs TextShaper::ShapeUnicode(const std::vector<uint32_t>& codepoints);
 ```
-Shape Unicode text into [ShapedGlyphs](#shaped-glyphs).
+Shape Unicode text into [ShapedGlyphs](#shapedglyphs).
 * `codepoints` - Unicode codepoints.
 
-### TextShaper::GetBaselineHeight
+### TextShaper::GetFontMetrics
 ```cpp
-int TextShaper::GetBaselineHeight() const;
+FontMetrics TextShaper::GetFontMetrics() const;
 ```
-Get the distance (in pixels) from one baseline to the next. This value is scaled according to the font size and it is always rounded to the nearest integer.
+Get the font metrics. See: [FontMetrics](#fontmetrics).
 
 ### TextShaper::Measure
 ```cpp
 TextMeasurement TextShaper::Measure(const ShapedGlyphs& glyphs);
 ```
 Measure the dimensions of a shaped text. Returns a [TextMeasurement](#textmeasurement) object.
-* `glyphs` - [ShapedGlyphs](#shaped-glyphs).
+* `glyphs` - [ShapedGlyphs](#shapedglyphs).

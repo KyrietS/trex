@@ -49,6 +49,7 @@ int main()
 	Trex::TextShaper shaper(atlas);
 	Trex::ShapedGlyphs shapedGlyphs = shaper.ShapeAscii("Hello, World!");
 	Trex::TextMeasurement textMeas = Trex::TextShaper::Measure(shapedGlyphs);
+	Trex::FontMetrics fontMetrics = shaper.GetFontMetrics();
 
 	InitWindow(600, 250, "MeasureText Example");
 
@@ -60,19 +61,22 @@ int main()
 	{
 		BeginDrawing();
 		ClearBackground(WHITE);
+		const int cursorX = 50, cursorY = 100;
+		const int cursorWidth = 1;
+		const int cursorHeight = fontMetrics.ascender - fontMetrics.descender;
 
-		RenderShapedText(50, 100, shapedGlyphs, atlasTexture);
+		RenderShapedText(cursorX, cursorY, shapedGlyphs, atlasTexture);
 
-		DrawCircle(50, 100, 3, VIOLET);
+		DrawCircle(cursorX, cursorY, 3, VIOLET);
 
 		// Draw cursor before the text
-		DrawRectangle(50, 100 + (int)textMeas.yOffset, 1, (int)textMeas.height, RED);
+		DrawRectangle(cursorX, cursorY - fontMetrics.ascender, cursorWidth, cursorHeight, RED);
 
 		// Draw filled rectangle over the text
-		DrawRectangle(50 + (int)textMeas.xOffset, 100 + (int)textMeas.yOffset, (int)textMeas.width, (int)textMeas.height, Fade(GREEN, 0.2f));
+		DrawRectangle(cursorX + (int)textMeas.xOffset, cursorY + (int)textMeas.yOffset, (int)textMeas.width, (int)textMeas.height, Fade(GREEN, 0.2f));
 
 		// Draw cursor after the text
-		DrawRectangle(50 + (int)textMeas.xAdvance, 100 + (int)textMeas.yAdvance + (int)textMeas.yOffset, 1, (int)textMeas.height, BLUE);
+		DrawRectangle(cursorX + (int)textMeas.xAdvance, cursorY - fontMetrics.ascender, cursorWidth, cursorHeight, BLUE);
 
 		EndDrawing();
 	}

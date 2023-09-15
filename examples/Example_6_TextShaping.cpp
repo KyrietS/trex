@@ -47,6 +47,7 @@ int main()
 
 	Trex::Atlas atlas(FONT_PATH, FONT_SIZE, Trex::Charset::Full());
 	Trex::TextShaper shaper(atlas);
+	Trex::FontMetrics fontMetrics = shaper.GetFontMetrics();
 	Trex::ShapedGlyphs asciiGlyphs = shaper.ShapeAscii("Hello, World!");
 
 	std::vector<uint32_t> somePolishText = {
@@ -72,7 +73,7 @@ int main()
 		RenderShapedText(50, cursorY, asciiGlyphs, atlasTexture);
 
 		// Second line of text
-		cursorY += shaper.GetBaselineHeight();
+		cursorY += fontMetrics.height;
 		RenderShapedText(50, cursorY, unicodeGlyphs, atlasTexture);
 
 		EndDrawing();

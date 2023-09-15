@@ -53,9 +53,9 @@ namespace Trex
 		return GetShapedGlyphs();
 	}
 
-	int TextShaper::GetBaselineHeight() const
+	FontMetrics TextShaper::GetFontMetrics() const
 	{
-		return static_cast<int>(m_AtlasFont->face->size->metrics.height) / 64;
+		return m_AtlasFont->GetMetrics();
 	}
 
 	TextMeasurement TextShaper::Measure(const Trex::ShapedGlyphs& glyphs)
