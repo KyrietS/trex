@@ -97,7 +97,7 @@ These dependencies are fetched and configured automatically by CMake.
 Examples use [raylib](https://github.com/raysan5/raylib) library to render a text on the screen.
 
 ## License
-Copyright © 2023 KyrietS\
+Copyright © 2023-2024 KyrietS\
 Use of this software is granted under the terms of the MIT License.
 
 See the [LICENSE](LICENSE) file for more details.
