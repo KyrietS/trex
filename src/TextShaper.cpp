@@ -6,7 +6,7 @@
 namespace Trex
 {
 
-	Trex::TextShaper::TextShaper(const Trex::Atlas& atlas)
+	TextShaper::TextShaper(const Trex::Atlas& atlas)
 		: m_Glyphs(atlas.GetGlyphs()),
 		  m_UnknownGlyph(atlas.GetUnknownGlyph()),
 		  m_AtlasFont(atlas.GetFont()),
@@ -15,36 +15,30 @@ namespace Trex
 	{
 	}
 
-	Trex::TextShaper::~TextShaper()
+	TextShaper::~TextShaper()
 	{
 		hb_buffer_destroy(m_Buffer);
 		hb_font_destroy(m_Font);
 	}
 
-	ShapedGlyphs TextShaper::ShapeAscii(const std::string& text)
-	{
-		std::vector<uint32_t> codepoints(text.begin(), text.end());
-		return ShapeUnicode(codepoints);
-	}
-
-	ShapedGlyphs TextShaper::ShapeUtf8(const std::string& text)
+	ShapedGlyphs TextShaper::ShapeUtf8(const std::span<const char> text)
 	{
 		ResetBuffer();
-		hb_buffer_add_utf8(m_Buffer, text.c_str(), (int)text.size(), 0, (int)text.size());
+		hb_buffer_add_utf8(m_Buffer, text.data(), (int)text.size(), 0, (int)text.size());
 		hb_shape(m_Font, m_Buffer, nullptr, 0);
 
 		return GetShapedGlyphs();
 	}
 
-	ShapedGlyphs TextShaper::ShapeUtf32(const std::u32string& text)
+	ShapedGlyphs TextShaper::ShapeUtf32(const std::span<const char32_t> text)
 	{
-		// Unfortunately casting text.c_str() to uint32_t* violates the strict aliasing rule.
+		// Unfortunately casting char32_t* to uint32_t* violates the strict aliasing rule.
 		// char32_t and uint32_t are not the same type, even though they are both 32 bits wide.
 		std::vector<uint32_t> codepoints(text.begin(), text.end());
 		return ShapeUnicode(codepoints);
 	}
 
-	ShapedGlyphs TextShaper::ShapeUnicode(const std::vector<uint32_t>& codepoints)
+	ShapedGlyphs TextShaper::ShapeUnicode(const std::span<const uint32_t> codepoints)
 	{
 		ResetBuffer();
 		hb_buffer_add_codepoints(m_Buffer, codepoints.data(), (int)codepoints.size(), 0, (int)codepoints.size());

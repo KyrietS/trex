@@ -1,6 +1,7 @@
 #pragma once
 #include "Atlas.hpp"
 #include <vector>
+#include <span>
 
 struct hb_glyph_info_t;
 struct hb_glyph_position_t;
@@ -34,10 +35,14 @@ namespace Trex
 		explicit TextShaper(const Atlas& atlas);
 		~TextShaper();
 
-		ShapedGlyphs ShapeAscii(const std::string& text);
-		ShapedGlyphs ShapeUtf8(const std::string& text);
-		ShapedGlyphs ShapeUtf32(const std::u32string& text);
-		ShapedGlyphs ShapeUnicode(const std::vector<uint32_t>& codepoints);
+		ShapedGlyphs ShapeAscii(std::span<const char> text)
+		{
+			// UTF-8 encoding of ASCII characters is the same as ASCII encoding.
+			return ShapeUtf8(text);
+		}
+		ShapedGlyphs ShapeUtf8(std::span<const char> text);
+		ShapedGlyphs ShapeUtf32(std::span<const char32_t> text);
+		ShapedGlyphs ShapeUnicode(std::span<const uint32_t> codepoints);
 
 		FontMetrics GetFontMetrics() const;
 
