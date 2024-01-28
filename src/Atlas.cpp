@@ -111,9 +111,11 @@ namespace Trex
 		if (mode == RenderMode::SDF and not isGlyphEmpty and not error)
 			error = FT_Render_Glyph(glyph, FT_RENDER_MODE_SDF);
 
-		// Use sdf renderer. This renderer uses outlines instead of bitmap.
-		// The benchmark shows that this renderer is 2 times slower than bsdf renderer.
-		// FT_Error error = FT_Render_Glyph(glyph, GetFreeTypeRenderMode(mode));
+		// Instead of using bsdf renderer by rendering the glyph to bitmap with normal mode,
+		// and then rendering the bitmap with sdf mode, I can use classic sdf renderer directly
+		// (without the bitmap step). This renderer will use the outlines instead of a bitmap.
+		// But a benchmark showed that such renderer is 2 times slower than a bsdf renderer.
+		// FT_Error error = FT_Render_Glyph(glyph, FT_RENDER_MODE_SDF);
 
 		if (error)
 		{
