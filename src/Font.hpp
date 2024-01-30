@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <span>
 #include <vector>
+#include <variant>
 
 struct FT_FaceRec_;
 
@@ -9,6 +10,7 @@ namespace Trex
 {
 	struct Pixels { int value; };
 	struct Points { int value; };
+	using FontSize = std::variant<Pixels, Points>;
 
 	struct FontMetrics
 	{
@@ -25,8 +27,7 @@ namespace Trex
 		Font(Font&&) noexcept;
 		~Font();
 
-		void SetSize(Pixels size);
-		void SetSize(Points size);
+		void SetSize(const FontSize& size);
 		uint32_t GetGlyphIndex(uint32_t codepoint) const;
 
 		FontMetrics GetMetrics() const;
@@ -34,6 +35,10 @@ namespace Trex
 		FT_FaceRec_* face = nullptr;
 
 	private:
+		void SetSizeInPixels(Pixels size);
+		void SetSizeInPoints(Points size);
+
+
 		std::vector<uint8_t> fontData = {};
 	};
 }

@@ -63,7 +63,23 @@ namespace Trex
 		FT_Done_Face(face);
 	}
 
-	void Font::SetSize(Pixels size) // NOLINT(readability-make-member-function-const)
+	void Font::SetSize(const FontSize& size)
+	{
+		if (std::holds_alternative<Pixels>(size))
+		{
+			SetSizeInPixels(std::get<Pixels>(size));
+		}
+		else if (std::holds_alternative<Points>(size))
+		{
+			SetSizeInPoints(std::get<Points>(size));
+		}
+		else
+		{
+			throw std::runtime_error("Error: invalid font size type");
+		}
+	}
+
+	void Font::SetSizeInPixels(Pixels size) // NOLINT(readability-make-member-function-const)
 	{
 		FT_Error error = FT_Set_Pixel_Sizes(face, 0, size.value);
 		if (error)
@@ -72,7 +88,7 @@ namespace Trex
 		}
 	}
 
-	void Font::SetSize(Points size) // NOLINT(readability-make-member-function-const)
+	void Font::SetSizeInPoints(Points size) // NOLINT(readability-make-member-function-const)
 	{
 		FT_Error error = FT_Set_Char_Size(face, 0, size.value * 64, 0, 0); // 72 dpi used as default
 		if (error)
