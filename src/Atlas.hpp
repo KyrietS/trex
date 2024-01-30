@@ -3,38 +3,14 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <span>
 #include "Font.hpp"
+#include "Charset.hpp"
 
 struct FT_FaceRec_;
 
 namespace Trex
 {
-	class Charset
-	{
-	public:
-		explicit Charset(const std::string& codepoints);
-		explicit Charset(uint32_t last);
-		explicit Charset(uint32_t first, uint32_t last);
-		explicit Charset(std::vector<uint32_t> codepoints);
-
-		Charset(Charset&&) = default;
-		Charset(const Charset&) = default;
-		Charset& operator=(const Charset&) = default;
-
-		static Charset Full() { return {}; };
-		static Charset Ascii() { return Charset( 0, 127 ); };
-
-		size_t Size() const { return m_Charset.size(); }
-		const std::vector<uint32_t>& Codepoints() const { return m_Charset; }
-		bool IsFull() const { return m_AllCodepoints; }
-
-	private:
-		Charset() : m_Charset({ 0 }), m_AllCodepoints(true) {}
-
-		std::vector<uint32_t> m_Charset = {};
-		bool m_AllCodepoints = false;
-	};
-
 	struct Glyph
 	{
 		unsigned int codepoint; // Unicode codepoint
@@ -52,8 +28,8 @@ namespace Trex
 	class Atlas
 	{
 	public:
-		Atlas(const std::string& fontPath, int fontSize, const Charset&, RenderMode = RenderMode::DEFAULT, int padding = 1);
-		Atlas(std::span<const uint8_t> fontData, int fontSize, const Charset&, RenderMode = RenderMode::DEFAULT, int padding = 1);
+		Atlas(const std::string& fontPath, int fontSize, const Charset& = Charset::Full(), RenderMode = RenderMode::DEFAULT, int padding = 1);
+		Atlas(std::span<const uint8_t> fontData, int fontSize, const Charset& = Charset::Full(), RenderMode = RenderMode::DEFAULT, int padding = 1);
 
 		void SetUnknownGlyph(uint32_t codepoint);
 		const Glyph& GetUnknownGlyph() const;

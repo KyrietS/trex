@@ -3,7 +3,6 @@
 #include <ft2build.h>
 #include <sdf/ftsdfrend.h>
 #include FT_FREETYPE_H
-#include FT_RENDER_H
 #include <cstdint>
 #include <vector>
 #include <string_view>
@@ -17,35 +16,6 @@
 
 namespace Trex
 {
-	Charset::Charset(const std::string& codepoints)
-	{
-		m_Charset.reserve(codepoints.size());
-		for (const char codepoint : codepoints)
-		{
-			m_Charset.push_back(codepoint);
-		}
-	}
-
-	Charset::Charset(uint32_t last)
-		: Charset(0, last)
-	{
-	}
-
-	Charset::Charset(uint32_t first, uint32_t last)
-	{
-		assert(first <= last);
-		m_Charset.reserve(last - first + 1);
-		for (uint32_t codepoint = first; codepoint <= last; codepoint++)
-		{
-			m_Charset.push_back(codepoint);
-		}
-	}
-
-	Charset::Charset(std::vector<uint32_t> codepoints)
-		: m_Charset(std::move(codepoints))
-	{
-	}
-
 	struct GlyphMetrics
 	{
 		unsigned int width;
@@ -243,19 +213,19 @@ namespace Trex
 
 	Charset GetFullCharsetFilled(Font &font)
 	{
-		std::vector<uint32_t> codepoints;
-		codepoints.push_back(0xFFFF); // Add unknown glyph. It will have index 0.
+		Charset charset;
+		charset.AddCodepoint(0xFFFF); // Add unknown glyph. It will have index 0.
 
 		FT_UInt nextGlyphIndex;
 		FT_ULong codepoint = FT_Get_First_Char(font.face, &nextGlyphIndex);
 
 		while (nextGlyphIndex != 0)
 		{
-			codepoints.push_back(codepoint);
+			charset.AddCodepoint(codepoint);
 			codepoint = FT_Get_Next_Char(font.face, codepoint, &nextGlyphIndex);
 		}
 
-		return Charset{ codepoints };
+		return charset;
 	}
 
 	Atlas::Atlas(const std::string& fontPath, int fontSize, const Charset& charset, RenderMode mode, int padding)
