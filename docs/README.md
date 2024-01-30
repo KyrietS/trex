@@ -29,8 +29,9 @@ Note: `data` is copied into the font object. It is safe to destroy the original 
 
 ### Font::SetSize
 ```cpp
-void Font::SetSize(Pixels size);
-void Font::SetSize(Points size);
+using FontSize = std::variant<Pixels, Points>;
+
+void Font::SetSize(const FontSize& size);
 ```
 Change font size. The default font size after loading is 12pt.
 * `size` - Size of the font in pixels or points.
@@ -71,15 +72,16 @@ Represents a set of supported codepoints.
 
 ### Charset::Charset
 ```cpp
-explicit Charset(std::string codepoints);
-explicit Charset(uint32_t last); // first = 0
+using Range = std::pair<uint32_t, uint32_t>;
+
+explicit Charset(); // empty charset
 explicit Charset(uint32_t first, uint32_t last);
-explicit Charset(std::vector<uint32_t> codepoints);
+explicit Charset(const std::vector<Range> codepointRanges);
+explicit Charset(std::span<const Range> codepointRanges);
 ```
-* `codepoints` - A string of 1-byte codepoints.
 * `first` - First codepoint in the range.
 * `last` - Last codepoint in the range.
-* `codepoints` - A vector of codepoints.
+* `codepointRanges` - An array of pairs `first` and `last`.
 
 ### Charset::Full
 ```cpp
@@ -103,7 +105,7 @@ Returns the number of codepoints in the charset.
 
 ### Charset::Codepoints
 ```cpp
-const std::vector<uint32_t>& Charset::Codepoints() const;
+const std::set<uint32_t>& Charset::Codepoints() const;
 ```
 Returns a vector of codepoints in the charset.
 
@@ -114,6 +116,9 @@ Note: If the charset is marked as "full", the vector will be empty because it is
 bool Charset::IsFull() const;
 ```
 Returns true if the charset contains all possible codepoints.
+
+### Charset::begin/end
+This struct is iterable and thus can be used in range-based for loops. It iterates over all codepoints in the charset.
 
 ## Glyph
 Represents a glyph in the atlas.
@@ -170,9 +175,9 @@ Atlas(std::span<const uint8_t> fontData, int fontSize, const Charset&, RenderMod
 ```
 * `fontPath` - Path to the font file.
 * `fontSize` - Size of the font in pixels.
-* `charset` - Charset of the atlas. See: [Charset](#charset).
-* `renderMode` - Render mode of the atlas. See: [RenderMode](#rendermode).
-* `padding` - Padding between glyphs in the atlas. Default is 1.
+* `charset` - Charset of the atlas. Default is `Full`. See: [Charset](#charset).
+* `renderMode` - Render mode of the atlas. Default is `DEFAULT`. See: [RenderMode](#rendermode).
+* `padding` - Padding between glyphs in the atlas. Default is `1`.
 * `fontData` - Font file data. This span should represent contiguous array of bytes.
 
 Note: `Charset` and `fontData` are copied and then owned by the atlas. They can be safely destroyed after the atlas is created.
