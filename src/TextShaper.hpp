@@ -35,7 +35,7 @@ namespace Trex
 		explicit TextShaper(const Atlas& atlas);
 		~TextShaper();
 
-		ShapedGlyphs ShapeAscii(std::span<const char> text)
+		ShapedGlyphs ShapeAscii(const std::span<const char> text)
 		{
 			// UTF-8 encoding of ASCII characters is the same as ASCII encoding.
 			return ShapeUtf8(text);
