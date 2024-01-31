@@ -14,6 +14,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(${TEST_TARGET}
     TestAtlas.cpp
+    TestBitmapHelpers.cpp
     TestFont.cpp
     TestTextShaper.cpp
     TestCharset.cpp

@@ -22,8 +22,8 @@ namespace Trex
 
 	enum class RenderMode { DEFAULT, SDF, /* LCD */ };
 
-	using AtlasBitmap = std::vector<uint8_t>;
-	using AtlasGlyphs = std::map<uint32_t, Glyph>;
+	using AtlasBitmap = std::vector<uint8_t>; // 1-byte GRAYSCALE
+	using AtlasGlyphs = std::map<uint32_t, Glyph>; // key: glyph index in font (NOT codepoint!)
 
 	class Atlas
 	{
