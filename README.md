@@ -52,12 +52,17 @@ for (const Trex::ShapedGlyph& glyph : glyphs)
 ## Getting Started
 To get started with Trex, follow the instructions below:
 
-1. Clone the repository: `git clone https://github.com/KyrietS/trex.git`
+1. Clone the repository: 
+```
+git clone https://github.com/KyrietS/trex.git
+```
 2. In your project's CMakeLists.txt add:
-    - `add_subdirectory(path_to_trex)`
-    - `target_link_libraries(your_target trex)`
+```
+add_subdirectory(path_to_trex)
+target_link_libraries(your_target trex)
+```
 3. Rebuild your project.
-4. Check the [docs/](docs/) to learn how to use Trex. You can use the provided examples in the [`examples`](examples/) folder as a reference.
+4. Check the [examples/](examples/) to learn how to use Trex or go to the [docs/](docs/) to learn about Trex API.
 
 Note: You can also use CMake's `FetchContent` module to download and configure Trex automatically.
 
@@ -93,9 +98,10 @@ Trex has the following dependencies:
 * HarfBuzz - A text shaping engine for accurate and complex text shaping.
 * stb_image_write - A header-only library for saving atlas bitmaps to PNG or BMP files.
 
-These dependencies are fetched and configured automatically by CMake.
+Examples use [raylib](https://github.com/raysan5/raylib) library to render text on the screen.\
+Tests use [Google Test](https://github.com/google/googletest) framework.
 
-Examples use [raylib](https://github.com/raysan5/raylib) library to render a text on the screen.
+**All dependencies are fetched and configured automatically by CMake.**
 
 ## License
 Copyright © 2023-2024 KyrietS\
