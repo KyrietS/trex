@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <span>
+#include <cstdint>
 
 // Input to all these functions is always a 1-byte grayscale bitmap
 // Which means that each pixel is represented by a single byte where
