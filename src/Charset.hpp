@@ -3,6 +3,7 @@
 #include <set>
 #include <vector>
 #include <span>
+#include <cstdint>
 
 
 namespace Trex
