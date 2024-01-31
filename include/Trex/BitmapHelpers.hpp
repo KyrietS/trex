@@ -12,11 +12,11 @@
 namespace Trex
 {
 	// Convert 1-byte: GRAY8 to 2-byte: GRAYALPHA88
-	std::vector<uint8_t> ConvertToGrayAlpha(std::span<const uint8_t> input);
+	std::vector<uint8_t> ConvertBitmapToGrayAlpha(std::span<const uint8_t> input);
 
 	// Convert 1-byte: GRAY8 to 3-byte: RGB888
-	std::vector<uint8_t> ConvertToRGB(std::span<const uint8_t> input);
+	std::vector<uint8_t> ConvertBitmapToRGB(std::span<const uint8_t> input);
 
 	// Convert 1-byte: GRAY8 to 4-byte: RGBA8888
-	std::vector<uint8_t> ConvertToRGBA(std::span<const uint8_t> input);
+	std::vector<uint8_t> ConvertBitmapToRGBA(std::span<const uint8_t> input);
 }

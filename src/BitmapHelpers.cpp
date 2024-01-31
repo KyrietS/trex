@@ -2,7 +2,7 @@
 
 namespace Trex
 {
-	std::vector<uint8_t> ConvertToGrayAlpha(const std::span<const uint8_t> input)
+	std::vector<uint8_t> ConvertBitmapToGrayAlpha(const std::span<const uint8_t> input)
 	{
 		std::vector<uint8_t> output(input.size() * 2);
 		for (size_t i = 0; i < input.size(); i++)
@@ -13,7 +13,7 @@ namespace Trex
 		return output;
 	}
 
-	std::vector<uint8_t> ConvertToRGB(const std::span<const uint8_t> input)
+	std::vector<uint8_t> ConvertBitmapToRGB(const std::span<const uint8_t> input)
 	{
 		std::vector<uint8_t> output(input.size() * 3);
 		for (size_t i = 0; i < input.size(); i++)
@@ -25,7 +25,7 @@ namespace Trex
 		return output;
 	}
 
-	std::vector<uint8_t> ConvertToRGBA(const std::span<const uint8_t> input)
+	std::vector<uint8_t> ConvertBitmapToRGBA(const std::span<const uint8_t> input)
 	{
 		std::vector<uint8_t> output(input.size() * 4);
 		for (size_t i = 0; i < input.size(); i++)

@@ -13,6 +13,7 @@
 10. [ShapedGlyphs](#shapedglyphs)
 11. [TextMeasurement](#textmeasurement)
 12. [TextShaper](#textshaper)
+13. [BitmapHelpers](#bitmaphelpers)
 
 ## Font
 Used internally by [Atlas](#atlas) to load a font file and generate a bitmap.
@@ -350,3 +351,27 @@ TextMeasurement TextShaper::Measure(const ShapedGlyphs& glyphs);
 ```
 Measure the dimensions of a shaped text. Returns a [TextMeasurement](#textmeasurement) object.
 * `glyphs` - [ShapedGlyphs](#shapedglyphs).
+
+## BitmapHelpers
+Helper functions for converting bitmaps to other formats. Trex uses 1-byte grayscale bitmaps and always returns a bitmap in this format.
+
+### ConvertBitmapToGrayAlpha
+```cpp
+std::vector<uint8_t> ConvertBitmapToGrayAlpha(std::span<const uint8_t> input);
+```
+Convert 1-byte: GRAY8 to 2-byte: GRAYALPHA88.
+* `input` - Input 1-byte grayscale bitmap.
+
+### ConvertBitmapToRGB
+```cpp
+std::vector<uint8_t> ConvertBitmapToRGB(std::span<const uint8_t> input);
+```
+Convert 1-byte: GRAY8 to 3-byte: RGB888.
+* `input` - Input 1-byte grayscale bitmap.
+
+### ConvertBitmapToRGBA
+```cpp
+std::vector<uint8_t> ConvertBitmapToRGBA(std::span<const uint8_t> input);
+```
+Convert 1-byte: GRAY8 to 4-byte: RGBA8888.
+* `input` - Input 1-byte grayscale bitmap.
