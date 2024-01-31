@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 #include <fstream>
-#include "Font.hpp"
+#include "Trex/Font.hpp"
 
 using namespace testing;
 constexpr std::string_view fontPath = "fonts/Roboto-Regular.ttf";

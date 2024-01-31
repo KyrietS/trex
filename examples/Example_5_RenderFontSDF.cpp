@@ -1,4 +1,4 @@
-#include "Atlas.hpp"
+#include "Trex/Atlas.hpp"
 #include "raylib.h"
 
 Image GetAtlasAsBitmapImage(Trex::Atlas& atlas)

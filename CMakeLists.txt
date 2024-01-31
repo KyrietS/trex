@@ -23,9 +23,9 @@ set(CMAKE_CXX_STANDARD 20)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT trex)
 
-file(GLOB SOURCES "src/*.cpp" "src/*.hpp")
+file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.hpp" "include/*.hpp")
 add_library(trex STATIC ${SOURCES})
-target_include_directories(trex PUBLIC src/)
+target_include_directories(trex PUBLIC include/)
 target_link_libraries(trex freetype harfbuzz)
 
 ####################

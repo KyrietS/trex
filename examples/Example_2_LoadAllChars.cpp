@@ -1,4 +1,4 @@
-#include "Atlas.hpp"
+#include "Trex/Atlas.hpp"
 
 int main()
 {

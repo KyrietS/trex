@@ -1,4 +1,4 @@
-#include "TextShaper.hpp"
+#include "Trex/TextShaper.hpp"
 #include "hb.h"
 #include "hb-ft.h"
 #include <limits>

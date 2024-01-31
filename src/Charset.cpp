@@ -1,4 +1,4 @@
-#include "Charset.hpp"
+#include "Trex/Charset.hpp"
 #include <stdexcept>
 
 namespace Trex

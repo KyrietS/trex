@@ -1,4 +1,4 @@
-#include "Font.hpp"
+#include "Trex/Font.hpp"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_LCD_FILTER_H

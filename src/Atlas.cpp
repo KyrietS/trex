@@ -1,5 +1,5 @@
-#include "Atlas.hpp"
-#include "Font.hpp"
+#include "Trex/Atlas.hpp"
+#include "Trex/Font.hpp"
 #include <ft2build.h>
 #include <sdf/ftsdfrend.h>
 #include FT_FREETYPE_H

@@ -1,6 +1,6 @@
 #include <fstream>
-#include "Atlas.hpp"
-#include "Font.hpp"
+#include "Trex/Atlas.hpp"
+#include "Trex/Font.hpp"
 
 std::vector<uint8_t> LoadFontFileData(const char* path)
 {

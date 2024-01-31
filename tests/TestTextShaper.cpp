@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "TextShaper.hpp"
+#include "Trex/TextShaper.hpp"
 
 using namespace testing;
 constexpr std::string_view fontPath = "fonts/Roboto-Regular.ttf";

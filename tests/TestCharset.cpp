@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "Atlas.hpp"
+#include "Trex/Atlas.hpp"
 
 
 TEST(CharsetConstructionTests, charsetShouldBeConstructibleFromRange)
