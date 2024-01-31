@@ -20,21 +20,21 @@ TEST_F(TextShaperTests, shouldShapeAsciiText)
 
 TEST_F(TextShaperTests, shouldShapeUtf8Text)
 {
-	constexpr char utf8Text[] = u8"Hello, 世界!";
+	constexpr char utf8Text[] = "Hello, \xc5\x9awiecie!";
 	const Trex::ShapedGlyphs glyphs = shaper.ShapeUtf8(utf8Text);
-	EXPECT_EQ(glyphs.size(), 15);
+	EXPECT_EQ(glyphs.size(), 16);
 }
 
 TEST_F(TextShaperTests, shouldShapeUtf32Text)
 {
-	const std::u32string utf32Text = U"Hello, 世界!";
+	const std::u32string utf32Text = U"Hello, Świecie!";
 	const Trex::ShapedGlyphs glyphs = shaper.ShapeUtf32(utf32Text);
 	EXPECT_EQ(glyphs.size(), utf32Text.size());
 }
 
 TEST_F(TextShaperTests, shouldShapeUnicodeText)
 {
-	constexpr uint32_t unicodeText[] = { 'H', 'e', 'l', 'l', 'o', ',', ' ', 0x4e16, 0x754c, '!' };
+	constexpr uint32_t unicodeText[] = { 'H', 'e', 'l', 'l', 'o', ',', ' ', 0x15a, 'w', 'i', 'e', 'c', 'i', 'e', '!'};
 	const Trex::ShapedGlyphs glyphs = shaper.ShapeUnicode(unicodeText);
 	EXPECT_EQ(glyphs.size(), std::size(unicodeText));
 }
@@ -49,13 +49,14 @@ TEST_F(TextShaperTests, shouldGetFontMetrics)
 
 TEST_F(TextShaperTests, shouldMeasureText)
 {
-	constexpr char utf8Text[] = u8"Hello, 世界!";
-	const Trex::ShapedGlyphs glyphs = shaper.ShapeUtf8(utf8Text);
+	const std::string asciiText = "Hello, World!";
+	const Trex::ShapedGlyphs glyphs = shaper.ShapeAscii(asciiText);
+
 	const Trex::TextMeasurement measurement = Trex::TextShaper::Measure(glyphs);
-	EXPECT_NEAR(measurement.width, 186.0, 1.0);
-	EXPECT_FLOAT_EQ(measurement.height, 37.0f);
+	EXPECT_NEAR(measurement.width, 174.5, 1.0);
+	EXPECT_FLOAT_EQ(measurement.height, 29.0f);
 	EXPECT_FLOAT_EQ(measurement.xOffset, 2.0f);
-	EXPECT_FLOAT_EQ(measurement.yOffset, -30.0f);
-	EXPECT_NEAR(measurement.xAdvance, 188.0, 1.0);
+	EXPECT_FLOAT_EQ(measurement.yOffset, -24.0f);
+	EXPECT_NEAR(measurement.xAdvance, 178.5, 1.0);
 	EXPECT_FLOAT_EQ(measurement.yAdvance, 0.0f);
 }
