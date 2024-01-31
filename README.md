@@ -4,6 +4,8 @@
 [![Build](https://github.com/KyrietS/trex/actions/workflows/build.yml/badge.svg)](https://github.com/KyrietS/trex/actions/workflows/build.yml)
 [![Tests](https://github.com/KyrietS/trex/actions/workflows/tests.yml/badge.svg)](https://github.com/KyrietS/trex/actions/workflows/tests.yml)
 [![Examples](https://github.com/KyrietS/trex/actions/workflows/examples.yml/badge.svg)](https://github.com/KyrietS/trex/actions/workflows/examples.yml)
+[![Lincense](https://img.shields.io/github/license/KyrietS/trex)](LICENSE)
+[![Trex release](https://img.shields.io/github/v/release/KyrietS/trex?include_prereleases&sort=semver)](https://github.com/KyrietS/trex/releases)
 
 Trex is a font rasterizer, atlas generator and text shaping library written in C++. It uses [FreeType](https://github.com/freetype/freetype) and [HarfBuzz](https://github.com/harfbuzz/harfbuzz) libraries under the hood. It provides a simple API that makes it easy to integrate high quality typography into your application.
 
