@@ -20,9 +20,9 @@ namespace Trex
 		int bearingX, bearingY; 
 	};
 
-	enum class RenderMode { DEFAULT, SDF, /* LCD */ };
+	enum class RenderMode { DEFAULT, SDF, LCD };
 
-	using AtlasBitmap = std::vector<uint8_t>; // 1-byte GRAYSCALE
+	using AtlasBitmap = std::vector<uint8_t>; // 1-byte GRAYSCALE or 3-byte RGB
 	using AtlasGlyphs = std::map<uint32_t, Glyph>; // key: glyph index in font (NOT codepoint!)
 
 	class Atlas
@@ -41,20 +41,21 @@ namespace Trex
 		AtlasBitmap& GetBitmap() { return m_Data; }
 		unsigned int GetWidth() const { return m_Width; }
 		unsigned int GetHeight() const { return m_Height; }
+		unsigned int GetChannels() const { return m_Channels; }
 
 		std::shared_ptr<const Font> GetFont() const { return m_Font; }
 		const AtlasGlyphs& GetGlyphs() const { return m_Glyphs; }
 
 	private:
 		void InitializeAtlas(const Charset&, RenderMode, int padding);
-		void GenerateAtlas(const Charset& charset, unsigned int atlasSize, int padding, RenderMode);
 		void InitializeDefaultGlyphIndex();
 		void SetUnknownGlyphIndex(uint32_t index);
 
 		std::shared_ptr<Font> m_Font;
 		AtlasBitmap m_Data;
-		unsigned int m_Width{};
-		unsigned int m_Height{};
+		unsigned int m_Width{}; // move to AtlasBitmap
+		unsigned int m_Height{}; // move to AtlasBitmap
+		unsigned int m_Channels {}; // move to AtlasBitmap
 		AtlasGlyphs m_Glyphs;
 		uint32_t m_UnknownGlyphIndex = 0;
 	};
