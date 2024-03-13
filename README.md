@@ -20,6 +20,8 @@ The text rendered by this library is every pixel identical to that rendered by t
 * **Easy Integration** - The library provides a simple and minimalistic API, making it easy to integrate text rendering capabilities into you projects.
 * **Static Library** - Trex uses CMake and it is configured as a static library.
 * **UTF-8 and Unicode Support** - Trex supports UTF-8 and Unicode text.
+* **SDF rendering** - Trex can render glyphs using the Signed Distance Field technique.
+* **Subpixel Rendering (ClearType)** - Trex supports subpixel rendering for RGB LCD displays.
 
 ## Basic Example
 
@@ -81,13 +83,13 @@ target_link_libraries(your_target trex)
 
 ## Atlas Examples
 
-- 512 x 512 ASCII atlas with glyphs from the [Roboto](https://fonts.google.com/specimen/Roboto) font (from 0 to 127).
+### [Roboto](https://fonts.google.com/specimen/Roboto) ASCII grayscale (512 x 512)
 ![ASCII atlas](https://github.com/KyrietS/trex/assets/19170699/7780d0c5-259f-45db-a019-ad4388b2489b)
 
 
-- 2048 x 1024 atlas with all glyphs from the [Roboto](https://fonts.google.com/specimen/Roboto) font.
+### [Roboto](https://fonts.google.com/specimen/Roboto) all glyphs grayscale (2048 x 1024)
 ![Roboto atlas](https://github.com/KyrietS/trex/assets/19170699/8dda53ff-9c58-4dcb-b565-5d5b55d6b431)
-The image above was cropped manually. Trex will always generate a square atlas. In this case it would be 2048 x 2048.
+The image above was cropped manually. Trex will always generate square atlas. In this case it would be 2048 x 2048.
 
 ## Documentation
 The documentation for the Trex API can be found [here](docs/README.md).
@@ -96,9 +98,9 @@ The documentation for the Trex API can be found [here](docs/README.md).
 
 Trex has the following dependencies:
 
-* FreeType - A high-quality font engine for rendering text.
-* HarfBuzz - A text shaping engine for accurate and complex text shaping.
-* stb_image_write - A header-only library for saving atlas bitmaps to PNG or BMP files.
+* [FreeType](https://github.com/freetype/freetype) - A high-quality font engine for rendering text.
+* [HarfBuzz](https://github.com/harfbuzz/harfbuzz) - A text shaping engine for accurate and complex text shaping.
+* [stb_image_write](https://github.com/nothings/stb) - A header-only library for saving atlas bitmaps to PNG or BMP files.
 
 Examples use [raylib](https://github.com/raysan5/raylib) library to render text on the screen.\
 Tests use [Google Test](https://github.com/google/googletest) framework.

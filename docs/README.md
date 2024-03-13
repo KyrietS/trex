@@ -148,11 +148,13 @@ Specifies how the text should be rendered.
 enum class RenderMode
 {
     DEFAULT,
-    SDF
+    SDF,
+    LCD
 };
 ```
-* `DEFAULT` - Rasterize the text with the default, grayscale FreeType renderer.
-* `SDF` - rasterize the text with the SDF renderer. You will need a fragment shader to display the text properly.
+* `DEFAULT` - Rasterize the text with the default, grayscale FreeType renderer. The bitmap will have 1-byte color channel.
+* `SDF` - rasterize the text with the SDF renderer. You will need a fragment shader to display the text properly. The bitmap will have 1-byte color channel.
+* `LCD` - rasterize the text with the subpixel renderer. The bitmap will have 3 color channels and the bitmap will be in RGB format.
 
 ## AtlasBitmap
 Represents a bitmap of the atlas.
@@ -228,15 +230,21 @@ Get the atlas bitmap. See: [AtlasBitmap](#atlasbitmap).
 
 ### Atlas::GetWidth
 ```cpp
-int Atlas::GetWidth() const;
+unsigned int Atlas::GetWidth() const;
 ```
 Get the width of the atlas bitmap.
 
 ### Atlas::GetHeight
 ```cpp
-int Atlas::GetHeight() const;
+unsigned int Atlas::GetHeight() const;
 ```
 Get the height of the atlas bitmap.
+
+### Atlas::GetChannels
+```cpp
+unsigned int Atlas::GetChannels() const;
+```
+Get the number of color channels in the atlas bitmap. When `RenderMode::DEFAULT` or `RenderMode::SDF` is used it is always 1. When `RenderMode::SDF` is used it is always 3 and the bitmap is in RGB format.
 
 ### Atlas::UnloadBitmap
 ```cpp
