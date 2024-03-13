@@ -16,12 +16,6 @@
 
 namespace Trex
 {
-	struct GlyphMetrics
-	{
-		unsigned int width;
-		unsigned int height;
-	};
-
 namespace
 {
 	// RAII wrapper for FreeType glyph
@@ -111,8 +105,6 @@ namespace
 	};
 
 	using FreeTypeGlyphs = std::vector<FreeTypeGlyph>;
-
-}
 
 	Glyph GetGlyphInfo(const FreeTypeGlyph& ftGlyph, int x, int y)
 	{
@@ -342,6 +334,7 @@ namespace
 
 		return charset;
 	}
+} // namespace
 
 	Atlas::Atlas(const std::string& fontPath, int fontSize, const Charset& charset, RenderMode mode, int padding)
 		: m_Font(std::make_shared<Font>(fontPath.c_str()))
