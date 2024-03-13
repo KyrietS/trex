@@ -315,7 +315,7 @@ namespace
 			atlasX += glyphWidthPadding * channels;
 		}
 
-		return { bitmap, glyphs };
+		return { std::move(bitmap), std::move(glyphs) };
 	}
 
 	Charset GetFullCharsetFilled(Font &font)
@@ -361,9 +361,9 @@ namespace
 		m_Height = atlasSize;
 		m_Channels = mode == RenderMode::LCD ? 3 : 1;
 
-		const auto& [bitmap, glyphs] = BuildAtlasBitmap( *m_Font, ftGlyphs, atlasSize, padding, m_Channels );
-		this->m_Data = bitmap;
-		this->m_Glyphs = glyphs;
+		auto [bitmap, glyphs] = BuildAtlasBitmap( *m_Font, ftGlyphs, atlasSize, padding, m_Channels );
+		this->m_Data = std::move(bitmap);
+		this->m_Glyphs = std::move(glyphs);
 
 		InitializeDefaultGlyphIndex();
 	}
