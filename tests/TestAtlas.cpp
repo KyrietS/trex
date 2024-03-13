@@ -41,10 +41,14 @@ TEST(AtlasConstructionTests, shouldBeAbleToSetCharset)
 	Trex::Atlas atlas(fontPath.data(), 32, charset);
 }
 
-TEST(AtlasConstructionTests, shouldBeAbleToSetRenderMode)
+TEST(AtlasConstructionTests, shouldBeAbleToSetSdfRenderMode)
 {
-	constexpr auto renderMode = Trex::RenderMode::SDF;
-	Trex::Atlas atlas(fontPath.data(), 32, Trex::Charset::Full(), renderMode);
+	Trex::Atlas atlas(fontPath.data(), 32, Trex::Charset::Full(), Trex::RenderMode::SDF);
+}
+
+TEST(AtlasConstructionTests, shouldBeAbleToSetLcdRenderMode)
+{
+	Trex::Atlas atlas(fontPath.data(), 32, Trex::Charset::Full(), Trex::RenderMode::LCD);
 }
 
 TEST(AtlasConstructionTests, shouldBeAbleToSetPadding)
