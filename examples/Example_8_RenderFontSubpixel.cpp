@@ -32,8 +32,6 @@ int main()
 
 	Trex::Atlas atlas( FONT_PATH, FONT_SIZE, Trex::Charset::Ascii(), Trex::RenderMode::LCD );
 
-	atlas.SaveToFile( "LCD_Atlas.png" );
-
 	InitWindow( 500, 250, "RenderSingleCharacters Example" );
 
 	// Load atlas texture
