@@ -1,14 +1,14 @@
 #include "Trex/Atlas.hpp"
 #include "raylib.h"
 
-Image GetAtlasAsBitmapImage( Trex::Atlas& atlas )
+Image GetAtlasBitmapAsImage( const Trex::Atlas::Bitmap& bitmap )
 {
 	Image atlasImage;
-	atlasImage.data = atlas.GetBitmap().data(); // pointer to the atlas bitmap data
-	atlasImage.width = (int)atlas.GetWidth(); // width of the atlas bitmap
-	atlasImage.height = (int)atlas.GetHeight(); // height of the atlas bitmap
+	atlasImage.data = (void*)bitmap.Data().data(); // pointer to the atlas bitmap data
+	atlasImage.width = (int)bitmap.Width(); // width of the atlas bitmap
+	atlasImage.height = (int)bitmap.Height(); // height of the atlas bitmap
 	atlasImage.mipmaps = 1;
-	atlasImage.format = atlas.GetChannels() == 3 ? PIXELFORMAT_UNCOMPRESSED_R8G8B8 : PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
+	atlasImage.format = bitmap.Channels() == 3 ? PIXELFORMAT_UNCOMPRESSED_R8G8B8 : PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
 	return atlasImage;
 }
 
@@ -32,10 +32,12 @@ int main()
 
 	Trex::Atlas atlas( FONT_PATH, FONT_SIZE, Trex::Charset::Ascii(), Trex::RenderMode::LCD );
 
+	atlas.SaveToFile( "Example_8_RenderFontSubpixel.png" );
+
 	InitWindow( 500, 250, "RenderSingleCharacters Example" );
 
 	// Load atlas texture
-	Image atlasImage = GetAtlasAsBitmapImage( atlas );
+	Image atlasImage = GetAtlasBitmapAsImage( atlas.GetBitmap() );
 	Texture2D atlasTexture = LoadTextureFromImage( atlasImage );
 
 	while( !WindowShouldClose() )

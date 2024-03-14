@@ -16,11 +16,11 @@
 
 namespace Trex
 {
-namespace
-{
+
 	// RAII wrapper for FreeType glyph
-	struct FreeTypeGlyph
+	class Atlas::FreeTypeGlyph
 	{
+	public:
 		FreeTypeGlyph( uint32_t codepoint, FT_GlyphSlot glyphSlot )
 			: codepoint{codepoint}
 		{
@@ -60,31 +60,31 @@ namespace
 			return *this;
 		}
 
-		unsigned char& byteAt( int x, int y ) const
+		unsigned char& ByteAt( int x, int y ) const
 		{
-			return data()[ y * stride() + x ];
+			return Data()[ y * Stride() + x ];
 		}
-		unsigned char* data() const
+		unsigned char* Data() const
 		{
 			return glyph->bitmap.buffer;
 		}
-		unsigned int widthInBytes() const
+		unsigned int WidthInBytes() const
 		{
 			return glyph->bitmap.width;
 		}
-		unsigned int widthInPixels() const
+		unsigned int WidthInPixels() const
 		{
-			return widthInBytes() / channels();
+			return WidthInBytes() / Channels();
 		}
-		unsigned int height() const // in pixels
+		unsigned int Height() const // in pixels
 		{
 			return glyph->bitmap.rows;
 		}
-		int stride() const // in bytes
+		int Stride() const // in bytes
 		{
 			return glyph->bitmap.pitch;
 		}
-		int channels() const
+		int Channels() const
 		{
 			switch( glyph->bitmap.pixel_mode )
 			{
@@ -98,30 +98,31 @@ namespace
 		}
 		int index() const { return glyphIndex; }
 
+		Glyph GetGlyphInfo(int x, int y ) const
+		{
+			Glyph glyph {
+				.codepoint = codepoint,
+				.glyphIndex = glyphIndex,
+				.x = x,
+				.y = y,
+				.width = WidthInPixels(),
+				.height = Height(),
+				.bearingX = metrics.horiBearingX / 64,
+				.bearingY = metrics.horiBearingY / 64
+			};
+
+			return glyph;
+		}
+
+	private:
 		uint32_t codepoint {};
 		FT_BitmapGlyph glyph {};
 		FT_Glyph_Metrics metrics {};
 		uint32_t glyphIndex {};
 	};
 
-	using FreeTypeGlyphs = std::vector<FreeTypeGlyph>;
-
-	Glyph GetGlyphInfo(const FreeTypeGlyph& ftGlyph, int x, int y)
-	{
-		Glyph glyph {
-			.codepoint = ftGlyph.codepoint,
-			.glyphIndex = ftGlyph.glyphIndex,
-			.x = x,
-			.y = y,
-			.width = ftGlyph.widthInPixels(),
-			.height = ftGlyph.height(),
-			.bearingX = ftGlyph.metrics.horiBearingX / 64,
-			.bearingY = ftGlyph.metrics.horiBearingY / 64
-		};
-
-		return glyph;
-	}
-
+namespace
+{
 	// Note: calling this function will invalidate the previous FT_GlyphSlot returned.
 	FT_GlyphSlot LoadGlyphWithoutRender(FT_Face fontFace, uint32_t codepoint)
 	{
@@ -180,24 +181,24 @@ namespace
 		return fontFace->glyph;
 	}
 
-	FreeTypeGlyph LoadGlyph( FT_Face fontFace, uint32_t codepoint, RenderMode mode )
+	Atlas::FreeTypeGlyph LoadGlyph( FT_Face fontFace, uint32_t codepoint, RenderMode mode )
 	{
 		switch( mode )
 		{
 			case RenderMode::DEFAULT:
-				return FreeTypeGlyph { codepoint, LoadGlyphWithGrayscaleRender( fontFace, codepoint ) };
+				return Atlas::FreeTypeGlyph { codepoint, LoadGlyphWithGrayscaleRender( fontFace, codepoint ) };
 			case RenderMode::SDF:
-				return FreeTypeGlyph { codepoint, LoadGlyphWithSdfRender( fontFace, codepoint ) };
+				return Atlas::FreeTypeGlyph { codepoint, LoadGlyphWithSdfRender( fontFace, codepoint ) };
 			case RenderMode::LCD:
-				return FreeTypeGlyph { codepoint, LoadGlyphWithSubpixelRender( fontFace, codepoint ) };
+				return Atlas::FreeTypeGlyph { codepoint, LoadGlyphWithSubpixelRender( fontFace, codepoint ) };
 			default:
 				throw std::runtime_error( "Unsupported render mode" );
 		}
 	}
 
-	std::vector<FreeTypeGlyph> LoadAllGlyphs( FT_Face fontFace, const Charset& charset, RenderMode mode )
+	std::vector<Atlas::FreeTypeGlyph> LoadAllGlyphs( FT_Face fontFace, const Charset& charset, RenderMode mode )
 	{
-		std::vector<FreeTypeGlyph> allGlyphs;
+		std::vector<Atlas::FreeTypeGlyph> allGlyphs;
 		allGlyphs.reserve( charset.Size() );
 		for( uint32_t codepoint : charset.Codepoints() )
 		{
@@ -217,15 +218,15 @@ namespace
 	* 
 	* @return True if all glyphs can fit into the atlas, false otherwise.
 	*/
-	bool IsAtlasSizeEnough(const std::vector<FreeTypeGlyph>& ftGlyphs, unsigned int atlasSize, int padding)
+	bool IsAtlasSizeEnough(const std::vector<Atlas::FreeTypeGlyph>& ftGlyphs, unsigned int atlasSize, int padding)
 	{
 		int x = 0;
 		int y = 0;
 		unsigned int maxHeight = 0;
 		for (const auto& glyph : ftGlyphs)
 		{
-			unsigned int glyphWidth = glyph.widthInPixels() + padding * 2;
-			unsigned int glyphHeight = glyph.height() + padding * 2;
+			unsigned int glyphWidth = glyph.WidthInPixels() + padding * 2;
+			unsigned int glyphHeight = glyph.Height() + padding * 2;
 
 			maxHeight = std::max(maxHeight, glyphHeight);
 			if (x + glyphWidth > atlasSize) // Next row
@@ -252,7 +253,7 @@ namespace
 	* @return The smallest atlas size in pixels that can fit all glyphs. 
 	*         The atlas size is always a square with the power of 2.
 	*/
-	unsigned int GetAtlasSize(const std::vector<FreeTypeGlyph>& glyphsMetrics, int padding)
+	unsigned int GetAtlasSize(const std::vector<Atlas::FreeTypeGlyph>& glyphsMetrics, int padding)
 	{
 		unsigned int atlasSize = 128; // Start with 128x128
 		while (not IsAtlasSizeEnough(glyphsMetrics, atlasSize, padding))
@@ -263,23 +264,22 @@ namespace
 		return atlasSize;
 	}
 
-	std::pair<AtlasBitmap, AtlasGlyphs> BuildAtlasBitmap(
-		Font& font, const std::vector<FreeTypeGlyph>& ftGlyphs, unsigned int atlasSize, int padding, unsigned int channels)
+	std::pair<Atlas::Bitmap, AtlasGlyphs> BuildAtlasBitmap(
+		Font& font, const std::vector<Atlas::FreeTypeGlyph>& ftGlyphs, unsigned int atlasSize, int padding, PixelFormat format)
 	{
-		//unsigned int altasWidth = atlasSize * 3; // in bytes
-		AtlasBitmap bitmap(atlasSize * atlasSize * channels );
-		std::fill(bitmap.begin(), bitmap.end(), 255); // Fill with white
+		Atlas::Bitmap bitmap(atlasSize, atlasSize, format);
 		AtlasGlyphs glyphs;
 
 		FT_Face face = font.face;
+		unsigned int channels = bitmap.Channels();
 		int atlasX = 0;
 		int atlasY = 0;
 		int maxHeight = 0;
 		for (const auto& glyph: ftGlyphs)
 		{
-			unsigned int glyphWidth = glyph.widthInPixels();
-			unsigned int glyphHeight = glyph.height();
-			int glyphStride = glyph.stride(); // in bytes
+			unsigned int glyphWidth = glyph.WidthInPixels();
+			unsigned int glyphHeight = glyph.Height();
+			int glyphStride = glyph.Stride(); // in bytes
 			unsigned int xPaddingInBytes = padding * channels;
 
 			int glyphWidthPadding = static_cast<int>(glyphWidth) + padding * 2;
@@ -293,24 +293,16 @@ namespace
 				atlasY += maxHeight;
 				maxHeight = glyphHeightPadding;
 			}
-			// Copy glyph bitmap to atlas bitmap
-			for (unsigned int glyphY = 0; glyphY < glyphHeight; ++glyphY)
-			{
-				unsigned int atlasBitmapRow = (atlasY + glyphY + padding) * atlasSize * channels;
-				unsigned int glyphWidthInBytes = glyphWidth * channels;
-				for (unsigned int glyphX = 0; glyphX < glyphWidthInBytes; ++glyphX)
-				{
-					unsigned int atlasBitmapIndex = atlasBitmapRow + (atlasX + glyphX + xPaddingInBytes);
-					bitmap.at(atlasBitmapIndex) = 255 - glyph.byteAt(glyphX, glyphY);
-				}
-			}
 
+			// Copy glyph bitmap to atlas bitmap
 			int glyphXPosInAtlas = (atlasX + xPaddingInBytes) / channels; // in pixels
 			int glyphYPosInAtlas = atlasY + padding;
+			bitmap.Draw( glyphXPosInAtlas, glyphYPosInAtlas, glyph );
+
 			auto idx = glyph.index();
 
 			// Multiple glyphs can have index=0.
-			glyphs[glyph.index()] = GetGlyphInfo(glyph, glyphXPosInAtlas, glyphYPosInAtlas);
+			glyphs[glyph.index()] = glyph.GetGlyphInfo(glyphXPosInAtlas, glyphYPosInAtlas);
 
 			atlasX += glyphWidthPadding * channels;
 		}
@@ -334,7 +326,67 @@ namespace
 
 		return charset;
 	}
+
+	int GetChannels( PixelFormat format )
+	{
+		switch( format )
+		{
+		case PixelFormat::GRAY:
+			return 1;
+		case PixelFormat::RGB:
+			return 3;
+		case PixelFormat::BGRA:
+			return 4;
+		default:
+			throw std::runtime_error("Unknown pixel format");
+		}
+	}
+
+	PixelFormat GetPixelFormat( RenderMode mode )
+	{
+		switch( mode )
+		{
+		case RenderMode::DEFAULT:
+			return PixelFormat::GRAY;
+		case RenderMode::SDF:
+			return PixelFormat::GRAY;
+		case RenderMode::LCD:
+			return PixelFormat::RGB;
+		default:
+			throw std::runtime_error("Unknown render mode");
+		}
+	}
 } // namespace
+
+
+	Atlas::Bitmap::Bitmap( unsigned int width, unsigned int height, PixelFormat format )
+	: m_Width( width ), m_Height( height ), m_Format( format )
+	{
+		m_Data.resize(width * height * GetChannels(format));
+		std::fill(m_Data.begin(), m_Data.end(), 255); // Fill with white
+	}
+
+	void Atlas::Bitmap::Draw( int x, int y, const Atlas::FreeTypeGlyph& glyph )
+	{
+		unsigned int glyphHeight = glyph.Height();
+		unsigned int glyphWidthInBytes = glyph.WidthInBytes();
+
+		// Copy glyph bitmap to atlas bitmap
+		for( unsigned int glyphY = 0; glyphY < glyphHeight; ++glyphY )
+		{
+			unsigned int atlasBitmapRow = (y + glyphY) * Width() * Channels();
+			for( unsigned int glyphX = 0; glyphX < glyphWidthInBytes; ++glyphX )
+			{
+				unsigned int atlasBitmapIndex = atlasBitmapRow + x * Channels() + glyphX;
+				m_Data.at( atlasBitmapIndex ) = 255 - glyph.ByteAt( glyphX, glyphY );
+			}
+		}
+	}
+
+	unsigned int Atlas::Bitmap::Channels() const
+	{
+		return GetChannels(m_Format);
+	}
 
 	Atlas::Atlas(const std::string& fontPath, int fontSize, const Charset& charset, RenderMode mode, int padding)
 		: m_Font(std::make_shared<Font>(fontPath.c_str()))
@@ -357,12 +409,8 @@ namespace
 		auto ftGlyphs = LoadAllGlyphs(m_Font->face, filledCharset, mode);
 		auto atlasSize = GetAtlasSize( ftGlyphs, padding);
 
-		m_Width = atlasSize;
-		m_Height = atlasSize;
-		m_Channels = mode == RenderMode::LCD ? 3 : 1;
-
-		auto [bitmap, glyphs] = BuildAtlasBitmap( *m_Font, ftGlyphs, atlasSize, padding, m_Channels );
-		this->m_Data = std::move(bitmap);
+		auto [bitmap, glyphs] = BuildAtlasBitmap( *m_Font, ftGlyphs, atlasSize, padding, GetPixelFormat(mode) );
+		this->m_Bitmap = std::move(bitmap);
 		this->m_Glyphs = std::move(glyphs);
 
 		InitializeDefaultGlyphIndex();
@@ -401,17 +449,17 @@ namespace
 
 	void Atlas::SaveToFile(const std::string& path) const
 	{
-		const int channels = m_Channels;
-		const int width = static_cast<int>(m_Width);
-		const int height = static_cast<int>(m_Height);
+		const int channels = m_Bitmap.Channels();
+		const int width = static_cast<int>(m_Bitmap.Width());
+		const int height = static_cast<int>(m_Bitmap.Height());
 
 		if (path.ends_with(".png"))
 		{
-			stbi_write_png(path.c_str(), width, height, channels, m_Data.data(), 0);
+			stbi_write_png(path.c_str(), width, height, channels, m_Bitmap.Data().data(), 0);
 		}
 		else if (path.ends_with(".bmp"))
 		{
-			stbi_write_bmp(path.c_str(), width, height, channels, m_Data.data());
+			stbi_write_bmp(path.c_str(), width, height, channels, m_Bitmap.Data().data());
 		}
 		else
 		{
