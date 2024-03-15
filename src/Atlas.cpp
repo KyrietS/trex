@@ -345,8 +345,8 @@ namespace
 			.y = bitmapY,
 			.width = ftGlyph.WidthInPixels(),
 			.height = ftGlyph.Height(),
-			.bearingX = ftGlyph.metrics.horiBearingX / 64,
-			.bearingY = ftGlyph.metrics.horiBearingY / 64
+			.bearingX = (int)(ftGlyph.metrics.horiBearingX / 64),
+			.bearingY = (int)(ftGlyph.metrics.horiBearingY / 64)
 		};
 		m_Glyphs[ftGlyph.glyphIndex] = glyph;
 	}
@@ -361,7 +361,7 @@ namespace
 		return m_Glyphs.contains( index ) ? m_Glyphs.at( index ) : m_Glyphs.at( m_UnknownGlyphIndex );
 	}
 	
-	void Atlas::Glyphs::SetUnknownGlyph( uint32_t codepoint )
+	void Atlas::Glyphs::SetUnknownGlyph( uint32_t codepoint ) const
 	{
 		auto index = m_Font->GetGlyphIndex( codepoint );
 		SetUnknownGlyphIndex( index );
@@ -372,7 +372,7 @@ namespace
 		return GetGlyphByIndex( m_UnknownGlyphIndex );
 	}
 
-	void Atlas::Glyphs::SetUnknownGlyphIndex( uint32_t index )
+	void Atlas::Glyphs::SetUnknownGlyphIndex( uint32_t index ) const
 	{
 		if( m_Glyphs.contains( index ) )
 		{

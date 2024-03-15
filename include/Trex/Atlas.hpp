@@ -46,17 +46,17 @@ namespace Trex
 			const std::map<uint32_t, Glyph>& Data() const { return m_Glyphs; }
 			bool Empty() const { return m_Glyphs.empty(); }
 
-			void SetUnknownGlyph( uint32_t codepoint );
-			void SetUnknownGlyphIndex( uint32_t index );
+			void SetUnknownGlyph( uint32_t codepoint ) const;
+			void SetUnknownGlyphIndex( uint32_t index ) const;
 			const Glyph& GetUnknownGlyph() const;
-			const Glyph& GetGlyphByCodepoint( uint32_t codepoint ) const; // glyphs
-			const Glyph& GetGlyphByIndex( uint32_t index ) const; // glyphs
+			const Glyph& GetGlyphByCodepoint( uint32_t codepoint ) const;
+			const Glyph& GetGlyphByIndex( uint32_t index ) const;
 			void Add(int bitmapX, int bitmapY, const FreeTypeGlyph&);
 		private:
 
 			std::map<uint32_t, Glyph> m_Glyphs {};
 			std::shared_ptr<const Font> m_Font {};
-			uint32_t m_UnknownGlyphIndex = 0;
+			mutable uint32_t m_UnknownGlyphIndex = 0;
 		};
 
 		class Bitmap

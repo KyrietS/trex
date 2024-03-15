@@ -59,68 +59,10 @@ TEST(AtlasConstructionTests, shouldBeAbleToSetPadding)
 
 struct AtlasTests : Test
 {
+	AtlasTests() = default;
+
 	Trex::Atlas atlas{ fontPath.data(), 32 };
 };
-
-TEST_F(AtlasTests, shouldSetUnknownGlyph)
-{
-	constexpr uint32_t codepointOfUnknownGlyph = 97;
-	atlas.SetUnknownGlyph(codepointOfUnknownGlyph);
-	EXPECT_EQ(atlas.GetUnknownGlyph().codepoint, codepointOfUnknownGlyph);
-}
-
-TEST_F(AtlasTests, shouldNotSetUnknownGlyphWhenCodepointIsNotInCharset)
-{
-	constexpr uint32_t codepointOutOfCharset = 0x123456;
-	atlas.SetUnknownGlyph(codepointOutOfCharset);
-	EXPECT_NE(atlas.GetUnknownGlyph().codepoint, codepointOutOfCharset);
-}
-
-TEST_F(AtlasTests, shouldGetGlyphByCodepoint)
-{
-	constexpr uint32_t codepoint = 'A';
-	const Trex::Glyph& glyph = atlas.GetGlyphByCodepoint(codepoint);
-	EXPECT_EQ(glyph.codepoint, codepoint);
-}
-
-TEST_F(AtlasTests, shouldGetInvalidGlyphWhenCodepointIsNotInCharset)
-{
-	constexpr uint32_t codepointOutOfCharset = 0x123456;
-	const Trex::Glyph& glyph = atlas.GetGlyphByCodepoint(codepointOutOfCharset);
-	EXPECT_EQ(glyph.codepoint, 0xFFFF);
-}
-
-TEST_F(AtlasTests, shouldGetGlyphByIndex)
-{
-	constexpr uint32_t index = 37;
-	const Trex::Glyph& glyph = atlas.GetGlyphByIndex(index);
-	EXPECT_EQ(glyph.glyphIndex, index);
-}
-
-TEST_F(AtlasTests, shouldGetUnknownGlyphWhenIndexIsNotInCharset)
-{
-	constexpr uint32_t indexOutOfCharset = 0x123456;
-	const Trex::Glyph& glyph = atlas.GetGlyphByIndex(indexOutOfCharset);
-	EXPECT_EQ(glyph.codepoint, atlas.GetUnknownGlyph().codepoint);
-}
-
-TEST_F(AtlasTests, shouldGetBitmap)
-{
-	const Trex::AtlasBitmap& bitmap = atlas.GetBitmap();
-	EXPECT_FALSE(bitmap.empty());
-}
-
-TEST_F(AtlasTests, shouldGetBitmapWidth)
-{
-	const unsigned int width = atlas.GetWidth();
-	EXPECT_EQ(width, 1024);
-}
-
-TEST_F(AtlasTests, shouldGetBitmapHeight)
-{
-	const unsigned int height = atlas.GetHeight();
-	EXPECT_EQ(height, 1024);
-}
 
 TEST_F(AtlasTests, shouldGetFont)
 {
@@ -129,8 +71,83 @@ TEST_F(AtlasTests, shouldGetFont)
 	EXPECT_NE(font->face, nullptr);
 }
 
-TEST_F(AtlasTests, shouldGetGlyphs)
+struct AtlasGlyphsTests : Test
 {
-	const Trex::AtlasGlyphs& glyphs = atlas.GetGlyphs();
-	EXPECT_EQ(glyphs.size(), 895);
+	AtlasGlyphsTests() : atlas{ fontPath.data(), 32 }, glyphs{atlas.GetGlyphs()} {}
+
+	Trex::Atlas atlas;
+	const Trex::Atlas::Glyphs& glyphs;
+};
+
+TEST_F(AtlasGlyphsTests, shouldContainAllGlyphs)
+{
+	EXPECT_FALSE(glyphs.Empty());
+	EXPECT_EQ(glyphs.Data().size(), 895);
+}
+
+TEST_F(AtlasGlyphsTests, shouldSetUnknownGlyph)
+{
+	constexpr uint32_t codepointOfUnknownGlyph = 97;
+	glyphs.SetUnknownGlyph(codepointOfUnknownGlyph);
+	EXPECT_EQ(glyphs.GetUnknownGlyph().codepoint, codepointOfUnknownGlyph);
+}
+
+TEST_F(AtlasGlyphsTests, shouldNotSetUnknownGlyphWhenCodepointIsNotInCharset)
+{
+	constexpr uint32_t codepointOutOfCharset = 0x123456;
+	glyphs.SetUnknownGlyph(codepointOutOfCharset);
+	EXPECT_NE(glyphs.GetUnknownGlyph().codepoint, codepointOutOfCharset);
+}
+
+TEST_F(AtlasGlyphsTests, shouldGetGlyphByCodepoint)
+{
+	constexpr uint32_t codepoint = 'A';
+	const Trex::Glyph& glyph = glyphs.GetGlyphByCodepoint(codepoint);
+	EXPECT_EQ(glyph.codepoint, codepoint);
+}
+
+TEST_F(AtlasGlyphsTests, shouldGetInvalidGlyphWhenCodepointIsNotInCharset)
+{
+	constexpr uint32_t codepointOutOfCharset = 0x123456;
+	const Trex::Glyph& glyph = glyphs.GetGlyphByCodepoint(codepointOutOfCharset);
+	EXPECT_EQ(glyph.codepoint, 0xFFFF);
+}
+
+TEST_F(AtlasGlyphsTests, shouldGetGlyphByIndex)
+{
+	constexpr uint32_t index = 37;
+	const Trex::Glyph& glyph = glyphs.GetGlyphByIndex(index);
+	EXPECT_EQ(glyph.glyphIndex, index);
+}
+
+TEST_F(AtlasGlyphsTests, shouldGetUnknownGlyphWhenIndexIsNotInCharset)
+{
+	constexpr uint32_t indexOutOfCharset = 0x123456;
+	const Trex::Glyph& glyph = glyphs.GetGlyphByIndex(indexOutOfCharset);
+	EXPECT_EQ(glyph.codepoint, glyphs.GetUnknownGlyph().codepoint);
+}
+
+struct AtlasBitmapTests : Test
+{
+	AtlasBitmapTests() : atlas{ fontPath.data(), 32 }, bitmap{atlas.GetBitmap()} {}
+
+	Trex::Atlas atlas;
+	const Trex::Atlas::Bitmap& bitmap;
+};
+
+TEST_F(AtlasBitmapTests, shouldGetBitmap)
+{
+	EXPECT_FALSE(bitmap.Data().empty());
+}
+
+TEST_F(AtlasBitmapTests, shouldGetBitmapWidth)
+{
+	const unsigned int width = bitmap.Width();
+	EXPECT_EQ(width, 1024);
+}
+
+TEST_F(AtlasBitmapTests, shouldGetBitmapHeight)
+{
+	const unsigned int height = bitmap.Height();
+	EXPECT_EQ(height, 1024);
 }
