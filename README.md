@@ -22,6 +22,7 @@ The text rendered by this library is every pixel identical to that rendered by t
 * **UTF-8 and Unicode Support** - Trex supports UTF-8 and Unicode text.
 * **SDF rendering** - Trex can render glyphs using the Signed Distance Field technique.
 * **Subpixel Rendering (ClearType)** - Trex supports subpixel rendering for RGB LCD displays.
+* **Emojis ❤️** - Trex can render fonts with colors, like emojis 💪😎👍
 
 ## Basic Example
 
