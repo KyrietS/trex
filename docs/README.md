@@ -6,15 +6,14 @@
 3. [Charset](#charset)
 4. [Glyph](#glyph)
 5. [RenderMode](#rendermode)
-6. [PixelFormat](#rendermode)
-7. [Atlas](#atlas)
-8. [Atlas::Glyphs](#atlasglyphs)
-9. [Atlas::Bitmap](#atlasbitmap)
-10. [ShapedGlyph](#shapedglyph)
-11. [ShapedGlyphs](#shapedglyphs)
-12. [TextMeasurement](#textmeasurement)
-13. [TextShaper](#textshaper)
-14. [BitmapHelpers](#bitmaphelpers)
+6. [Atlas](#atlas)
+7. [Atlas::Glyphs](#atlasglyphs)
+8. [Atlas::Bitmap](#atlasbitmap)
+9. [ShapedGlyph](#shapedglyph)
+10. [ShapedGlyphs](#shapedglyphs)
+11. [TextMeasurement](#textmeasurement)
+12. [TextShaper](#textshaper)
+13. [BitmapHelpers](#bitmaphelpers)
 
 ## Font
 Used internally by [Atlas](#atlas) to load a font file and generate a bitmap.
@@ -149,27 +148,15 @@ Specifies how the text should be rendered.
 enum class RenderMode
 {
     DEFAULT,
+    COLOR,
     SDF,
     LCD
 };
 ```
 * `DEFAULT` - Rasterize the text with the default, grayscale FreeType renderer. The bitmap will have 1-byte color channel.
+* `COLOR` - Rasterize the text with colors if the font supports it. The bitmap will have 4-byte color channels in RGBA format.
 * `SDF` - rasterize the text with the SDF renderer. You will need a fragment shader to display the text properly. The bitmap will have 1-byte color channel.
 * `LCD` - rasterize the text with the subpixel renderer. The bitmap will have 3 color channels and the bitmap will be in RGB format.
-
-## PixelFormat
-Specifies the pixel color format of the bitmap.
-```cpp
-enum class PixelFormat
-{
-    GRAY,
-    RGB,
-    BGRA
-}
-```
-* `GRAY` - 1-byte grayscale bitmap. Mapps from `RenderMode::DEFAULT` and `RenderMode::SDF`.
-* `RGB` - 3-byte RGB bitmap. Mapps from `RenderMode::LCD`.
-* `BGRA` - 4-byte BGRA bitmap. Not used yet.
 
 ## Atlas
 Represents aa atlas of glyphs.

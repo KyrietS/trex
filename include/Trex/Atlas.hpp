@@ -20,7 +20,6 @@ namespace Trex
 	};
 
 	enum class RenderMode { DEFAULT, COLOR, SDF, LCD };
-	enum class PixelFormat { GRAY, RGB, BGRA };
 
 	class Atlas
 	{
