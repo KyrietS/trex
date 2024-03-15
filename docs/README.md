@@ -6,14 +6,15 @@
 3. [Charset](#charset)
 4. [Glyph](#glyph)
 5. [RenderMode](#rendermode)
-6. [AtlasBitmap](#atlasbitmap)
-7. [AtlasGlyphs](#atlasglyphs)
-8. [Atlas](#atlas)
-9. [ShapedGlyph](#shapedglyph)
-10. [ShapedGlyphs](#shapedglyphs)
-11. [TextMeasurement](#textmeasurement)
-12. [TextShaper](#textshaper)
-13. [BitmapHelpers](#bitmaphelpers)
+6. [PixelFormat](#rendermode)
+7. [Atlas](#atlas)
+8. [Atlas::Glyphs](#atlasglyphs)
+9. [Atlas::Bitmap](#atlasbitmap)
+10. [ShapedGlyph](#shapedglyph)
+11. [ShapedGlyphs](#shapedglyphs)
+12. [TextMeasurement](#textmeasurement)
+13. [TextShaper](#textshaper)
+14. [BitmapHelpers](#bitmaphelpers)
 
 ## Font
 Used internally by [Atlas](#atlas) to load a font file and generate a bitmap.
@@ -156,20 +157,22 @@ enum class RenderMode
 * `SDF` - rasterize the text with the SDF renderer. You will need a fragment shader to display the text properly. The bitmap will have 1-byte color channel.
 * `LCD` - rasterize the text with the subpixel renderer. The bitmap will have 3 color channels and the bitmap will be in RGB format.
 
-## AtlasBitmap
-Represents a bitmap of the atlas.
+## PixelFormat
+Specifies the pixel color format of the bitmap.
 ```cpp
-using AtlasBitmap = std::vector<uint8_t>;
+enum class PixelFormat
+{
+    GRAY,
+    RGB,
+    BGRA
+}
 ```
-
-## AtlasGlyphs
-Represents a map of [Glyph](#glyph)s. The key is the glyph index.
-```cpp
-using AtlasGlyphs = std::map<uint32_t, Glyph>;
-```
+* `GRAY` - 1-byte grayscale bitmap. Mapps from `RenderMode::DEFAULT` and `RenderMode::SDF`.
+* `RGB` - 3-byte RGB bitmap. Mapps from `RenderMode::LCD`.
+* `BGRA` - 4-byte BGRA bitmap. Not used yet.
 
 ## Atlas
-Represents a glyph atlas.
+Represents aa atlas of glyphs.
 
 ### Atlas::Atlas
 ```cpp
@@ -185,72 +188,18 @@ Atlas(std::span<const uint8_t> fontData, int fontSize, const Charset&, RenderMod
 
 Note: `Charset` and `fontData` are copied and then owned by the atlas. They can be safely destroyed after the atlas is created.
 
-### Atlas::SaveToFile
-```cpp
-void Atlas::SaveToFile(const std::string& path) const;
-```
-Save the atlas bitmap to a PNG or BMP file.
-* `path` - Path to the file. The file extension determines the format. It must be one of: `.png`, `.bmp`.
-
-### Atlas::SetUnknownGlyph
-```cpp
-void Atlas::SetUnknownGlyph(uint32_t codepoint);
-```
-Set the unknown glyph to be used when a glyph is not found in the atlas.
-* `codepoint` - Unicode codepoint. If the codepoint is not found in the atlas, the function does nothing.
-
-If the unknown glyph is not set, the atlas will try to set it to some sensible value. 
-
-### Atlas::GetUnknownGlyph
-```cpp
-const Glyph& Atlas::GetUnknownGlyph() const;
-```
-Get the unknown glyph.
-
-### Atlas::GetGlyphByCodepoint
-```cpp
-const Glyph& Atlas::GetGlyphByCodepoint(uint32_t codepoint) const;
-```
-Get a [Glyph](#glyph) by its codepoint. If the glyph is not found, the default glyph is returned.
-* `codepoint` - Unicode codepoint.
-
-### Atlas::GetGlyphByIndex
-```cpp
-const Glyph& Atlas::GetGlyphByIndex(uint32_t glyphIndex) const;
-```
-Get a [Glyph](#glyph) by its glyph index. If the glyph is not found, the default glyph is returned.
-* `glyphIndex` - Glyph index.
-
 ### Atlas::GetBitmap
 ```cpp
-const AtlasBitmap& Atlas::GetBitmap() const;
-AtlasBitmap& GetBitmap();
+const Atlas::Bitmap& Atlas::GetBitmap() const;
 ```
-Get the atlas bitmap. See: [AtlasBitmap](#atlasbitmap).
+Get the atlas bitmap. See: [Atlas::Bitmap](#atlasbitmap).
 
-### Atlas::GetWidth
+### Atlas::GetGlyphs
 ```cpp
-unsigned int Atlas::GetWidth() const;
+const Atlas::Glyphs& Atlas::GetGlyphs() const;
 ```
-Get the width of the atlas bitmap.
-
-### Atlas::GetHeight
-```cpp
-unsigned int Atlas::GetHeight() const;
-```
-Get the height of the atlas bitmap.
-
-### Atlas::GetChannels
-```cpp
-unsigned int Atlas::GetChannels() const;
-```
-Get the number of color channels in the atlas bitmap. When `RenderMode::DEFAULT` or `RenderMode::SDF` is used it is always 1. When `RenderMode::SDF` is used it is always 3 and the bitmap is in RGB format.
-
-### Atlas::UnloadBitmap
-```cpp
-void Atlas::UnloadBitmap();
-```
-Unload the atlas bitmap from memory.
+Get all glyphs data. See: [Atlas::Glyphs](#atlasglyphs).\
+Note: If you use [TextShaper](#textshaper) to shape text, you don't need to use this function. All needed glyph data is already stored in the [ShapedGlyph](#shapedglyph)::info.
 
 ### Atlas::GetFont
 ```cpp
@@ -260,11 +209,83 @@ Get the Font object.
 
 Note: You should never use the `Font::face` without making sure that the Font object is still alive.
 
-### Atlas::GetGlyphs
+### Atlas::SaveToFile
 ```cpp
-const AtlasGlyphs& Atlas::GetGlyphs() const;
+void Atlas::SaveToFile(const std::string& path) const;
 ```
-Get the map of [Glyph](#glyph)s. See: [AtlasGlyphs](#atlasglyphs).
+Save the atlas bitmap to a PNG or BMP file.
+* `path` - Path to the file. The file extension determines the format. It must be one of: `.png`, `.bmp`.
+
+## Atlas::Glyphs
+Represents all rendered glyphs in the atlas.
+
+### Atlas::Glyphs::SetUnknownGlyph
+```cpp
+void Atlas::Glyphs::SetUnknownGlyph(uint32_t codepoint) const;
+```
+Set the unknown glyph to be used when a glyph is not found in the atlas.
+* `codepoint` - Unicode codepoint. If the codepoint is not found in the atlas, the function does nothing.
+
+If the unknown glyph is not set, the atlas will try to set it to some sensible value. 
+
+### Atlas::Glyphs::GetUnknownGlyph
+```cpp
+const Glyph& Atlas::Glyphs::GetUnknownGlyph() const;
+```
+Get the unknown glyph.
+
+### Atlas::Glyphs::GetGlyphByCodepoint
+```cpp
+const Glyph& Atlas::Glyphs::GetGlyphByCodepoint(uint32_t codepoint) const;
+```
+Get a [Glyph](#glyph) by its codepoint. If the glyph is not found, the default glyph is returned.
+* `codepoint` - Unicode codepoint.
+
+### Atlas::Glyphs::GetGlyphByIndex
+```cpp
+const Glyph& Atlas::Glyphs::GetGlyphByIndex(uint32_t glyphIndex) const;
+```
+Get a [Glyph](#glyph) by its glyph index. If the glyph is not found, the default glyph is returned.
+* `glyphIndex` - Glyph index.
+
+### Atlas::Glyphs::Add
+```cpp
+void Atlas::Glyphs::Add(int x, int y, const FreeTypeGlyph&);
+```
+Add new glyph. **Internal use only.**
+
+## Atlas::Bitmap
+Represents the rendered atlas bitmap with all glyphs.
+
+### Atlas::Bitmap::GetWidth
+```cpp
+unsigned int Atlas::Bitmap::Width() const;
+```
+Get the width of the atlas bitmap.
+
+### Atlas::Bitmap::GetHeight
+```cpp
+unsigned int Atlas::Bitmap::Height() const;
+```
+Get the height of the atlas bitmap.
+
+### Atlas::Bitmap::GetChannels
+```cpp
+unsigned int Atlas::Bitmap::Channels() const;
+```
+Get the number of color channels in the atlas bitmap. When `RenderMode::DEFAULT` or `RenderMode::SDF` is used it is always 1. When `RenderMode::SDF` is used it is always 3 and the bitmap is in RGB format.
+
+### Atlas::Bitmap::Format
+```cpp
+PixelFormat Atlas::Bitmap::Format() const;
+```
+Get the [PixelFormat](#pixelformat) of the atlas bitmap. 
+
+### Atlas::Bitmap::Draw
+```cpp
+void Atlas::Bitmap::Draw(int x, int y, const FreeTypeGlyph&);
+```
+Draw a glyph into the atlas bitmap. **Internal use only.**
 
 ### ShapedGlyph
 Represents a shaped glyph.
@@ -284,6 +305,18 @@ struct ShapedGlyph
 * `xAdvance` - Horizontal advance of the glyph.
 * `yAdvance` - Vertical advance of the glyph.
 * `info` - [Glyph](#glyph) info object.
+
+## AtlasBitmap
+Represents a bitmap of the atlas.
+```cpp
+using AtlasBitmap = std::vector<uint8_t>;
+```
+
+## AtlasGlyphs
+Represents a map of [Glyph](#glyph)s. The key is the glyph index.
+```cpp
+using AtlasGlyphs = std::map<uint32_t, Glyph>;
+```
 
 ### ShapedGlyphs
 Represents a vector of [ShapedGlyph](#shapedglyph)s.
