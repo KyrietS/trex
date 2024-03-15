@@ -19,7 +19,7 @@ namespace Trex
 		int bearingX, bearingY; 
 	};
 
-	enum class RenderMode { DEFAULT, SDF, LCD };
+	enum class RenderMode { DEFAULT, COLOR, SDF, LCD };
 	enum class PixelFormat { GRAY, RGB, BGRA };
 
 	class Atlas
@@ -63,20 +63,19 @@ namespace Trex
 		{
 		public:
 			Bitmap() = default;
-			Bitmap(unsigned int width, unsigned int height, PixelFormat format);
+			Bitmap(unsigned int width, unsigned int height, unsigned int channels);
 
 			const std::vector<uint8_t>& Data() const { return m_Data; }
 			unsigned int Width() const { return m_Width; }
 			unsigned int Height() const { return m_Height; }
-			PixelFormat Format() const { return m_Format; }
-			unsigned int Channels() const;
+			unsigned int Channels() const { return m_Channels; }
 
 			void Draw(int x, int y, const FreeTypeGlyph&);
 		private:
 			std::vector<uint8_t> m_Data {};
 			unsigned int m_Width {};
 			unsigned int m_Height {};
-			PixelFormat m_Format {};
+			unsigned int m_Channels {};
 		};
 
 	private:

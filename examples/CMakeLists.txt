@@ -18,6 +18,7 @@ add_example_project(Example_5_RenderFontSDF)
 add_example_project(Example_6_TextShaping)
 add_example_project(Example_7_MeasureText)
 add_example_project(Example_8_RenderFontSubpixel)
+add_example_project(Example_9_RenderEmoji)
 
 # Add Trex library
 add_subdirectory(../ trexlib)
