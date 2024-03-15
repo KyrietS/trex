@@ -41,14 +41,22 @@ TEST(AtlasConstructionTests, shouldBeAbleToSetCharset)
 	Trex::Atlas atlas(fontPath.data(), 32, charset);
 }
 
-TEST(AtlasConstructionTests, shouldBeAbleToSetSdfRenderMode)
+TEST(AtlasConstructionTests, shouldBeAbleToUseColorRenderMode)
 {
-	Trex::Atlas atlas(fontPath.data(), 32, Trex::Charset::Full(), Trex::RenderMode::SDF);
+	Trex::Atlas atlas(fontPath.data(), 32, Trex::Charset::Full(), Trex::RenderMode::COLOR);
+	EXPECT_EQ(atlas.GetBitmap().Channels(), 4);
 }
 
-TEST(AtlasConstructionTests, shouldBeAbleToSetLcdRenderMode)
+TEST(AtlasConstructionTests, shouldBeAbleToUseSdfRenderMode)
+{
+	Trex::Atlas atlas(fontPath.data(), 32, Trex::Charset::Full(), Trex::RenderMode::SDF);
+	EXPECT_EQ(atlas.GetBitmap().Channels(), 1);
+}
+
+TEST(AtlasConstructionTests, shouldBeAbleToUseLcdRenderMode)
 {
 	Trex::Atlas atlas(fontPath.data(), 32, Trex::Charset::Full(), Trex::RenderMode::LCD);
+	EXPECT_EQ(atlas.GetBitmap().Channels(), 3);
 }
 
 TEST(AtlasConstructionTests, shouldBeAbleToSetPadding)
