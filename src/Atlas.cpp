@@ -98,27 +98,12 @@ namespace Trex
 		}
 		int index() const { return glyphIndex; }
 
-		Glyph GetGlyphInfo(int x, int y ) const
-		{
-			Glyph glyph {
-				.codepoint = codepoint,
-				.glyphIndex = glyphIndex,
-				.x = x,
-				.y = y,
-				.width = WidthInPixels(),
-				.height = Height(),
-				.bearingX = metrics.horiBearingX / 64,
-				.bearingY = metrics.horiBearingY / 64
-			};
-
-			return glyph;
-		}
-
 	private:
 		uint32_t codepoint {};
 		FT_BitmapGlyph glyph {};
 		FT_Glyph_Metrics metrics {};
 		uint32_t glyphIndex {};
+		friend class Atlas::Glyphs;
 	};
 
 namespace
@@ -264,13 +249,11 @@ namespace
 		return atlasSize;
 	}
 
-	std::pair<Atlas::Bitmap, AtlasGlyphs> BuildAtlasBitmap(
-		Font& font, const std::vector<Atlas::FreeTypeGlyph>& ftGlyphs, unsigned int atlasSize, int padding, PixelFormat format)
+	Atlas::Bitmap BuildAtlasBitmap(
+		Atlas::Glyphs& glyphs, const std::vector<Atlas::FreeTypeGlyph>& ftGlyphs, unsigned int atlasSize, int padding, PixelFormat format)
 	{
 		Atlas::Bitmap bitmap(atlasSize, atlasSize, format);
-		AtlasGlyphs glyphs;
 
-		FT_Face face = font.face;
 		unsigned int channels = bitmap.Channels();
 		int atlasX = 0;
 		int atlasY = 0;
@@ -279,8 +262,6 @@ namespace
 		{
 			unsigned int glyphWidth = glyph.WidthInPixels();
 			unsigned int glyphHeight = glyph.Height();
-			int glyphStride = glyph.Stride(); // in bytes
-			unsigned int xPaddingInBytes = padding * channels;
 
 			int glyphWidthPadding = static_cast<int>(glyphWidth) + padding * 2;
 			int glyphHeightPadding = static_cast<int>(glyphHeight) + padding * 2;
@@ -295,19 +276,16 @@ namespace
 			}
 
 			// Copy glyph bitmap to atlas bitmap
-			int glyphXPosInAtlas = (atlasX + xPaddingInBytes) / channels; // in pixels
-			int glyphYPosInAtlas = atlasY + padding;
-			bitmap.Draw( glyphXPosInAtlas, glyphYPosInAtlas, glyph );
+			int glyphXPosInBitmap = atlasX / channels + padding; // in pixels
+			int glyphYPosInBitmap = atlasY + padding;
 
-			auto idx = glyph.index();
-
-			// Multiple glyphs can have index=0.
-			glyphs[glyph.index()] = glyph.GetGlyphInfo(glyphXPosInAtlas, glyphYPosInAtlas);
+			bitmap.Draw( glyphXPosInBitmap, glyphYPosInBitmap, glyph );
+			glyphs.Add( glyphXPosInBitmap, glyphYPosInBitmap, glyph );
 
 			atlasX += glyphWidthPadding * channels;
 		}
 
-		return { std::move(bitmap), std::move(glyphs) };
+		return bitmap;
 	}
 
 	Charset GetFullCharsetFilled(Font &font)
@@ -358,6 +336,49 @@ namespace
 	}
 } // namespace
 
+	void Atlas::Glyphs::Add( int bitmapX, int bitmapY, const FreeTypeGlyph& ftGlyph )
+	{
+		Glyph glyph {
+			.codepoint = ftGlyph.codepoint,
+			.glyphIndex = ftGlyph.glyphIndex,
+			.x = bitmapX,
+			.y = bitmapY,
+			.width = ftGlyph.WidthInPixels(),
+			.height = ftGlyph.Height(),
+			.bearingX = ftGlyph.metrics.horiBearingX / 64,
+			.bearingY = ftGlyph.metrics.horiBearingY / 64
+		};
+		m_Glyphs[ftGlyph.glyphIndex] = glyph;
+	}
+
+	const Glyph& Atlas::Glyphs::GetGlyphByCodepoint( uint32_t codepoint ) const
+	{
+		return GetGlyphByIndex( m_Font->GetGlyphIndex( codepoint ) );
+	}
+
+	const Glyph& Atlas::Glyphs::GetGlyphByIndex( uint32_t index ) const
+	{
+		return m_Glyphs.contains( index ) ? m_Glyphs.at( index ) : m_Glyphs.at( m_UnknownGlyphIndex );
+	}
+	
+	void Atlas::Glyphs::SetUnknownGlyph( uint32_t codepoint )
+	{
+		auto index = m_Font->GetGlyphIndex( codepoint );
+		SetUnknownGlyphIndex( index );
+	}
+
+	const Glyph& Atlas::Glyphs::GetUnknownGlyph() const
+	{
+		return GetGlyphByIndex( m_UnknownGlyphIndex );
+	}
+
+	void Atlas::Glyphs::SetUnknownGlyphIndex( uint32_t index )
+	{
+		if( m_Glyphs.contains( index ) )
+		{
+			m_UnknownGlyphIndex = index;
+		}
+	}
 
 	Atlas::Bitmap::Bitmap( unsigned int width, unsigned int height, PixelFormat format )
 	: m_Width( width ), m_Height( height ), m_Format( format )
@@ -389,14 +410,14 @@ namespace
 	}
 
 	Atlas::Atlas(const std::string& fontPath, int fontSize, const Charset& charset, RenderMode mode, int padding)
-		: m_Font(std::make_shared<Font>(fontPath.c_str()))
+		: m_Font(std::make_shared<Font>(fontPath.c_str())), m_Glyphs(m_Font)
 	{
 		m_Font->SetSize(Pixels{ fontSize });
 		InitializeAtlas(charset, mode, padding);
 	}
 
 	Atlas::Atlas(std::span<const uint8_t> fontData, int fontSize, const Charset& charset, RenderMode mode, int padding)
-		: m_Font(std::make_shared<Font>(fontData))
+		: m_Font(std::make_shared<Font>(fontData)), m_Glyphs(m_Font)
 	{
 		m_Font->SetSize(Pixels{ fontSize });
 		InitializeAtlas(charset, mode, padding);
@@ -409,42 +430,22 @@ namespace
 		auto ftGlyphs = LoadAllGlyphs(m_Font->face, filledCharset, mode);
 		auto atlasSize = GetAtlasSize( ftGlyphs, padding);
 
-		auto [bitmap, glyphs] = BuildAtlasBitmap( *m_Font, ftGlyphs, atlasSize, padding, GetPixelFormat(mode) );
+		auto bitmap = BuildAtlasBitmap( m_Glyphs, ftGlyphs, atlasSize, padding, GetPixelFormat(mode) );
 		this->m_Bitmap = std::move(bitmap);
-		this->m_Glyphs = std::move(glyphs);
 
 		InitializeDefaultGlyphIndex();
 	}
 
 	void Atlas::InitializeDefaultGlyphIndex()
 	{
-		if (m_Glyphs.empty())
+		if (m_Glyphs.Empty())
 		{
 			throw std::runtime_error("Error: cannot set default glyph in empty atlas");
 		}
 
-		SetUnknownGlyphIndex(m_Glyphs.begin()->first); // Set first glyph as default
-		SetUnknownGlyphIndex(0); // Try to set 'undefined character code' as default
-		SetUnknownGlyph(0xFFFD); // Try to set 'unicode replacement character' as default
-	}
-
-	void Atlas::SetUnknownGlyph(uint32_t codepoint)
-	{
-		auto index = m_Font->GetGlyphIndex(codepoint);
-		SetUnknownGlyphIndex(index);
-	}
-
-	const Glyph& Atlas::GetUnknownGlyph() const
-	{
-		return GetGlyphByIndex(m_UnknownGlyphIndex);
-	}
-
-	void Atlas::SetUnknownGlyphIndex(uint32_t index)
-	{
-		if (m_Glyphs.contains(index))
-		{
-			m_UnknownGlyphIndex = index;
-		}
+		m_Glyphs.SetUnknownGlyphIndex(m_Glyphs.Data().begin()->first); // Set first glyph as default
+		m_Glyphs.SetUnknownGlyphIndex(0); // Try to set 'undefined character code' as default
+		m_Glyphs.SetUnknownGlyph(0xFFFD); // Try to set 'unicode replacement character' as default
 	}
 
 	void Atlas::SaveToFile(const std::string& path) const
@@ -466,15 +467,4 @@ namespace
 			throw std::runtime_error("Error: unsupported file format");
 		}
 	}
-
-	const Glyph& Atlas::GetGlyphByCodepoint(uint32_t codepoint) const
-	{
-		return GetGlyphByIndex(m_Font->GetGlyphIndex(codepoint));
-	}
-
-	const Glyph& Atlas::GetGlyphByIndex(uint32_t index) const
-	{
-		return m_Glyphs.contains(index) ? m_Glyphs.at(index) : m_Glyphs.at(m_UnknownGlyphIndex);
-	}
-
 }

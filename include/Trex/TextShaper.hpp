@@ -54,8 +54,7 @@ namespace Trex
 		ShapedGlyph GetShapedGlyph(const hb_glyph_info_t& glyphInfo, const hb_glyph_position_t& glyphPos);
 		void ResetBuffer();
 
-		AtlasGlyphs m_Glyphs;
-		Glyph m_UnknownGlyph;
+		Atlas::Glyphs m_Glyphs;
 		std::shared_ptr<const Font> m_AtlasFont;
 
 		hb_buffer_t* m_Buffer;

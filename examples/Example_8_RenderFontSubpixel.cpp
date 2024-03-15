@@ -46,15 +46,15 @@ int main()
 		ClearBackground( WHITE );
 
 		// Character 'a'
-		const Trex::Glyph& glyphA = atlas.GetGlyphByCodepoint( 'a' );
+		const Trex::Glyph& glyphA = atlas.GetGlyphs().GetGlyphByCodepoint( 'a' );
 		RenderGlyph( 50, 50, glyphA, atlasTexture );
 
 		// Character '@'
-		const Trex::Glyph& glyphAtSign = atlas.GetGlyphByCodepoint( '@' );
+		const Trex::Glyph& glyphAtSign = atlas.GetGlyphs().GetGlyphByCodepoint( '@' );
 		RenderGlyph( 150, 50, glyphAtSign, atlasTexture );
 
 		// Character from outside the ASCII charset
-		const Trex::Glyph& glyphUndefined = atlas.GetGlyphByCodepoint( (char)178 );
+		const Trex::Glyph& glyphUndefined = atlas.GetGlyphs().GetGlyphByCodepoint( (char)178 );
 		RenderGlyph( 250, 50, glyphUndefined, atlasTexture );
 
 		EndDrawing();

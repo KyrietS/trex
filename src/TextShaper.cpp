@@ -8,7 +8,6 @@ namespace Trex
 
 	TextShaper::TextShaper(const Trex::Atlas& atlas)
 		: m_Glyphs(atlas.GetGlyphs()),
-		  m_UnknownGlyph(atlas.GetUnknownGlyph()),
 		  m_AtlasFont(atlas.GetFont()),
 		  m_Buffer(hb_buffer_create()),
 		  m_Font(hb_ft_font_create_referenced(m_AtlasFont->face))
@@ -89,7 +88,8 @@ namespace Trex
 
 	Glyph TextShaper::GetAtlasGlyph(uint32_t index)
 	{
-		return m_Glyphs.contains(index) ? m_Glyphs.at(index) : m_UnknownGlyph;
+		const auto& glyphs = m_Glyphs.Data();
+		return glyphs.contains( index ) ? glyphs.at( index ) : m_Glyphs.GetUnknownGlyph();
 	}
 
 	ShapedGlyphs TextShaper::GetShapedGlyphs()

@@ -7,7 +7,6 @@
 #include "Font.hpp"
 #include "Charset.hpp"
 
-struct FT_FaceRec_;
 
 namespace Trex
 {
@@ -23,27 +22,42 @@ namespace Trex
 	enum class RenderMode { DEFAULT, SDF, LCD };
 	enum class PixelFormat { GRAY, RGB, BGRA };
 
-	using AtlasGlyphs = std::map<uint32_t, Glyph>; // key: glyph index in font (NOT codepoint!)
-
 	class Atlas
 	{
 	public:
 		Atlas(const std::string& fontPath, int fontSize, const Charset& = Charset::Full(), RenderMode = RenderMode::DEFAULT, int padding = 1);
 		Atlas(std::span<const uint8_t> fontData, int fontSize, const Charset& = Charset::Full(), RenderMode = RenderMode::DEFAULT, int padding = 1);
 
-		struct FreeTypeGlyph;
+		class FreeTypeGlyph;
 		class Bitmap;
+		class Glyphs;
 
-		void SetUnknownGlyph(uint32_t codepoint); // glyphs
-		const Glyph& GetUnknownGlyph() const; // glyphs
-
-		void SaveToFile(const std::string& path) const;
-		const Glyph& GetGlyphByCodepoint(uint32_t codepoint) const; // glyphs
-		const Glyph& GetGlyphByIndex(uint32_t index) const; // glyphs
 		const Bitmap& GetBitmap() const { return m_Bitmap; }
+		const Glyphs& GetGlyphs() const { return m_Glyphs; }
 
 		std::shared_ptr<const Font> GetFont() const { return m_Font; }
-		const AtlasGlyphs& GetGlyphs() const { return m_Glyphs; }
+		void SaveToFile(const std::string& path) const;
+
+		class Glyphs
+		{
+		public:
+			Glyphs( const std::shared_ptr<const Font> font)
+				: m_Font(font) {}
+			const std::map<uint32_t, Glyph>& Data() const { return m_Glyphs; }
+			bool Empty() const { return m_Glyphs.empty(); }
+
+			void SetUnknownGlyph( uint32_t codepoint );
+			void SetUnknownGlyphIndex( uint32_t index );
+			const Glyph& GetUnknownGlyph() const;
+			const Glyph& GetGlyphByCodepoint( uint32_t codepoint ) const; // glyphs
+			const Glyph& GetGlyphByIndex( uint32_t index ) const; // glyphs
+			void Add(int bitmapX, int bitmapY, const FreeTypeGlyph&);
+		private:
+
+			std::map<uint32_t, Glyph> m_Glyphs {};
+			std::shared_ptr<const Font> m_Font {};
+			uint32_t m_UnknownGlyphIndex = 0;
+		};
 
 		class Bitmap
 		{
@@ -68,11 +82,9 @@ namespace Trex
 	private:
 		void InitializeAtlas(const Charset&, RenderMode, int padding);
 		void InitializeDefaultGlyphIndex();
-		void SetUnknownGlyphIndex(uint32_t index);
 
 		std::shared_ptr<Font> m_Font;
 		Bitmap m_Bitmap;
-		AtlasGlyphs m_Glyphs;
-		uint32_t m_UnknownGlyphIndex = 0;
+		Glyphs m_Glyphs;
 	};
 }
