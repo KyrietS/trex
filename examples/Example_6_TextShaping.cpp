@@ -2,14 +2,14 @@
 #include "Trex/TextShaper.hpp"
 #include "raylib.h"
 
-Image GetAtlasAsBitmapImage(Trex::Atlas& atlas)
+Image GetAtlasAsBitmapImage(const Trex::Atlas::Bitmap& bitmap)
 {
 	Image atlasImage;
-	atlasImage.data = atlas.GetBitmap().data(); // pointer to the atlas bitmap data
-	atlasImage.width = (int)atlas.GetWidth(); // width of the atlas bitmap
-	atlasImage.height = (int)atlas.GetHeight(); // height of the atlas bitmap
+	atlasImage.data = (void*)bitmap.Data().data(); // pointer to the atlas bitmap data
+	atlasImage.width = (int)bitmap.Width(); // width of the atlas bitmap
+	atlasImage.height = (int)bitmap.Height(); // height of the atlas bitmap
 	atlasImage.mipmaps = 1;
-	atlasImage.format = atlas.GetChannels() == 3 ? PIXELFORMAT_UNCOMPRESSED_R8G8B8 : PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
+	atlasImage.format = bitmap.Channels() == 3 ? PIXELFORMAT_UNCOMPRESSED_R8G8B8 : PIXELFORMAT_UNCOMPRESSED_GRAYSCALE;
 	return atlasImage;
 }
 
@@ -46,21 +46,23 @@ int main()
 	const char* FONT_PATH = "fonts/Roboto-Regular.ttf";
 
 	Trex::Atlas atlas(FONT_PATH, FONT_SIZE, Trex::Charset::Full());
+	const Trex::Atlas::Bitmap& bitmap = atlas.GetBitmap();
+
 	Trex::TextShaper shaper(atlas);
 	Trex::FontMetrics fontMetrics = shaper.GetFontMetrics();
-	Trex::ShapedGlyphs asciiGlyphs = shaper.ShapeAscii("Hello, World!");
+	Trex::ShapedGlyphs shapedAsciiGlyphs = shaper.ShapeAscii("Hello, World!");
 
 	std::vector<uint32_t> somePolishText = {
 		0x5A, 0x61, 0x17C, 0xF3, 0x142, 0x107,
 		0x20, 0x67, 0x119, 0x15B, 0x6C, 0x105,
 		0x20, 0x6A, 0x61, 0x17A, 0x144
 	};
-	Trex::ShapedGlyphs unicodeGlyphs = shaper.ShapeUnicode(somePolishText);
+	Trex::ShapedGlyphs shapedUnicodeGlyphs = shaper.ShapeUnicode(somePolishText);
 
 	InitWindow(600, 250, "TextShaping Example");
 
 	// Load atlas texture
-	Image atlasImage = GetAtlasAsBitmapImage(atlas);
+	Image atlasImage = GetAtlasAsBitmapImage(bitmap);
 	Texture2D atlasTexture = LoadTextureFromImage(atlasImage);
 
 	while (!WindowShouldClose())
@@ -70,11 +72,11 @@ int main()
 
 		// First line of text
 		float cursorY = 100.0f;
-		RenderShapedText(50, cursorY, asciiGlyphs, atlasTexture);
+		RenderShapedText(50, cursorY, shapedAsciiGlyphs, atlasTexture);
 
 		// Second line of text
 		cursorY += fontMetrics.height;
-		RenderShapedText(50, cursorY, unicodeGlyphs, atlasTexture);
+		RenderShapedText(50, cursorY, shapedUnicodeGlyphs, atlasTexture);
 
 		EndDrawing();
 	}

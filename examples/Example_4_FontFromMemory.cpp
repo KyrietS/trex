@@ -18,7 +18,7 @@ int main()
 	// Get font file as a vector of bytes
 	std::vector<uint8_t> fontFileData = LoadFontFileData(FONT_PATH);
 	Trex::Atlas atlas(fontFileData, FONT_SIZE, Trex::Charset::Ascii());
-	atlas.SaveToFile("FontFromMemory_atlas.png");
+	atlas.SaveToFile("Example_4_Atlas_FromMemory.png");
 
 	return 0;
 }

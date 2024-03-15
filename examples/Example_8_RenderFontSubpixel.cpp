@@ -31,13 +31,15 @@ int main()
 	const char* FONT_PATH = "fonts/Roboto-Regular.ttf";
 
 	Trex::Atlas atlas( FONT_PATH, FONT_SIZE, Trex::Charset::Ascii(), Trex::RenderMode::LCD );
+	const Trex::Atlas::Bitmap& bitmap = atlas.GetBitmap();
+	const Trex::Atlas::Glyphs& glyphs = atlas.GetGlyphs();
 
-	atlas.SaveToFile( "Example_8_RenderFontSubpixel.png" );
+	atlas.SaveToFile( "Example_8_Atlas_Subpixel.png" );
 
 	InitWindow( 500, 250, "RenderSingleCharacters Example" );
 
 	// Load atlas texture
-	Image atlasImage = GetAtlasBitmapAsImage( atlas.GetBitmap() );
+	Image atlasImage = GetAtlasBitmapAsImage( bitmap );
 	Texture2D atlasTexture = LoadTextureFromImage( atlasImage );
 
 	while( !WindowShouldClose() )
@@ -46,15 +48,15 @@ int main()
 		ClearBackground( WHITE );
 
 		// Character 'a'
-		const Trex::Glyph& glyphA = atlas.GetGlyphs().GetGlyphByCodepoint( 'a' );
+		const Trex::Glyph& glyphA = glyphs.GetGlyphByCodepoint( 'a' );
 		RenderGlyph( 50, 50, glyphA, atlasTexture );
 
 		// Character '@'
-		const Trex::Glyph& glyphAtSign = atlas.GetGlyphs().GetGlyphByCodepoint( '@' );
+		const Trex::Glyph& glyphAtSign = glyphs.GetGlyphByCodepoint( '@' );
 		RenderGlyph( 150, 50, glyphAtSign, atlasTexture );
 
 		// Character from outside the ASCII charset
-		const Trex::Glyph& glyphUndefined = atlas.GetGlyphs().GetGlyphByCodepoint( (char)178 );
+		const Trex::Glyph& glyphUndefined = glyphs.GetGlyphByCodepoint( (char)178 );
 		RenderGlyph( 250, 50, glyphUndefined, atlasTexture );
 
 		EndDrawing();

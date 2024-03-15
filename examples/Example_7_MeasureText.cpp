@@ -2,12 +2,12 @@
 #include "Trex/TextShaper.hpp"
 #include "raylib.h"
 
-Image GetAtlasAsBitmapImage(Trex::Atlas& atlas)
+Image GetAtlasAsBitmapImage(const Trex::Atlas::Bitmap& bitmap)
 {
 	Image atlasImage;
-	atlasImage.data = atlas.GetBitmap().data(); // pointer to the atlas bitmap data
-	atlasImage.width = (int)atlas.GetWidth(); // width of the atlas bitmap
-	atlasImage.height = (int)atlas.GetHeight(); // height of the atlas bitmap
+	atlasImage.data = (void*)bitmap.Data().data(); // pointer to the atlas bitmap data
+	atlasImage.width = (int)bitmap.Width(); // width of the atlas bitmap
+	atlasImage.height = (int)bitmap.Height(); // height of the atlas bitmap
 	atlasImage.mipmaps = 1;
 	atlasImage.format = PIXELFORMAT_UNCOMPRESSED_GRAYSCALE; // atlas bitmap format is always 1 byte per pixel (grayscale)
 	return atlasImage;
@@ -46,6 +46,8 @@ int main()
 	const char* FONT_PATH = "fonts/Roboto-Regular.ttf";
 
 	Trex::Atlas atlas(FONT_PATH, FONT_SIZE, Trex::Charset::Full());
+	const Trex::Atlas::Bitmap& bitmap = atlas.GetBitmap();
+
 	Trex::TextShaper shaper(atlas);
 	Trex::ShapedGlyphs shapedGlyphs = shaper.ShapeAscii("Hello, World!");
 	Trex::TextMeasurement textMeas = Trex::TextShaper::Measure(shapedGlyphs);
@@ -54,7 +56,7 @@ int main()
 	InitWindow(600, 250, "MeasureText Example");
 
 	// Load atlas texture
-	Image atlasImage = GetAtlasAsBitmapImage(atlas);
+	Image atlasImage = GetAtlasAsBitmapImage(bitmap);
 	Texture2D atlasTexture = LoadTextureFromImage(atlasImage);
 
 	while (!WindowShouldClose())

@@ -6,7 +6,7 @@ int main()
 	const char* FONT_PATH = "fonts/Roboto-Regular.ttf";
 
 	Trex::Atlas atlas(FONT_PATH, FONT_SIZE, Trex::Charset::Full());
-	atlas.SaveToFile("LoadAllChars_atlas.png");
+	atlas.SaveToFile("Example_2_Atlas_FULL.png");
 
 	return 0;
 }
