@@ -60,7 +60,7 @@ namespace Trex
 			return *this;
 		}
 
-		unsigned char& ByteAt( int x, int y ) const
+		const unsigned char& ByteAt( int x, int y ) const
 		{
 			return Data()[ y * Stride() + x ];
 		}
