@@ -43,7 +43,7 @@ int main()
 
 	atlas.SaveToFile( "Example_9_Atlas_Emoji.png" );
 
-	InitWindow( 500, 250, "RenderSingleCharacters Example" );
+	InitWindow( 500, 250, "Render Emojis Example" );
 
 	// Load atlas texture
 	Image atlasImage = GetAtlasBitmapAsImage( bitmap );

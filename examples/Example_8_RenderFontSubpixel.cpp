@@ -36,7 +36,7 @@ int main()
 
 	atlas.SaveToFile( "Example_8_Atlas_Subpixel.png" );
 
-	InitWindow( 500, 250, "RenderSingleCharacters Example" );
+	InitWindow( 500, 250, "Subpixel Rendering Example" );
 
 	// Load atlas texture
 	Image atlasImage = GetAtlasBitmapAsImage( bitmap );
