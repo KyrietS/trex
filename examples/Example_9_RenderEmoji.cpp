@@ -62,7 +62,7 @@ int main()
 		const Trex::Glyph& glyphSmile = glyphs.GetGlyphByCodepoint( 0x1F604 );
 		RenderGlyph( 25, 25, glyphSmile, atlasTexture );
 
-		// Hearth emoji
+		// Heart emoji
 		const Trex::Glyph& glyphAtSign = glyphs.GetGlyphByCodepoint( 0x2764 );
 		RenderGlyph( 100, 25, glyphAtSign, atlasTexture );
 
