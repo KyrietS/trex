@@ -82,15 +82,31 @@ FetchContent_MakeAvailable(trex)
 target_link_libraries(your_target trex)
 ```
 
-## Atlas Examples
+## Showcase
 
-### [Roboto](https://fonts.google.com/specimen/Roboto) ASCII grayscale (512 x 512)
+The text produced by trex has exactly the same size as the text rendered by Google Chrome and Firefox.
+
+![trex-vs-chrome](https://github.com/KyrietS/trex/assets/19170699/05a332bd-72b9-4575-957e-9bacf1b3b65d)
+
+_This is the reason why I created trex. I needed "Save to SVG" option in my application so I had to make sure that the text rendered by the application will perfectly match the SVG exported image._
+
+Emoji support
+
+![emojis](https://github.com/KyrietS/trex/assets/19170699/c5b42d59-2a22-4b5b-9785-29256e3babf1)
+
+[Roboto](https://fonts.google.com/specimen/Roboto) ASCII grayscale (512 x 512)
+
 ![ASCII atlas](https://github.com/KyrietS/trex/assets/19170699/7780d0c5-259f-45db-a019-ad4388b2489b)
 
 
-### [Roboto](https://fonts.google.com/specimen/Roboto) all glyphs grayscale (2048 x 1024)
+[Roboto](https://fonts.google.com/specimen/Roboto) all glyphs grayscale (2048 x 1024)
+
 ![Roboto atlas](https://github.com/KyrietS/trex/assets/19170699/8dda53ff-9c58-4dcb-b565-5d5b55d6b431)
-The image above was cropped manually. Trex will always generate square atlas. In this case it would be 2048 x 2048.
+
+[OpenMoji](https://github.com/hfg-gmuend/openmoji) all emojis
+
+![open-moji](https://github.com/KyrietS/trex/assets/19170699/09d989b1-1ad1-4ced-bdaa-c138689029ce)
+
 
 ## Documentation
 The documentation for the Trex API can be found [here](docs/README.md).
