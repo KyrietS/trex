@@ -428,7 +428,7 @@ namespace
 	{
 		m_Data.resize(width * height * channels);
 
-		int fillColor = Channels() == 4 ? 0 : 255;
+		int fillColor = Channels() > 1 ? 0 : 255;
 		std::fill(m_Data.begin(), m_Data.end(), fillColor );
 	}
 
@@ -463,9 +463,9 @@ namespace
 	void DrawRGB( std::vector<uint8_t>& data, const Atlas::FreeTypeGlyph& glyph, size_t atlasIdx, int glyphX, int glyphY )
 	{
 		assert( glyph.Channels() == 3 );
-		data[atlasIdx + 0] = 255 - glyph.ColorRed(glyphX, glyphY);
-		data[atlasIdx + 1] = 255 - glyph.ColorGreen(glyphX, glyphY);
-		data[atlasIdx + 2] = 255 - glyph.ColorBlue(glyphX, glyphY);
+		data[atlasIdx + 0] = glyph.ColorRed(glyphX, glyphY);
+		data[atlasIdx + 1] = glyph.ColorGreen(glyphX, glyphY);
+		data[atlasIdx + 2] = glyph.ColorBlue(glyphX, glyphY);
 	}
 
 	void Atlas::Bitmap::Draw( int x, int y, const Atlas::FreeTypeGlyph& glyph )

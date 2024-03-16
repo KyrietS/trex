@@ -34,8 +34,12 @@ void RenderGlyph( float x, float y, const Trex::Glyph& glyph, Texture2D& atlasTe
 int main()
 {
 	constexpr int FONT_SIZE = 64;
+#ifdef _WIN32
+	// Windows native emojis
 	const char* FONT_PATH = "C:\\Windows\\Fonts\\seguiemj.ttf";
-	//const char* FONT_PATH = "fonts/Roboto-Regular.ttf";
+#else
+	const char* FONT_PATH = "fonts/OpenMoji.ttf";
+#endif
 
 	Trex::Atlas atlas( FONT_PATH, FONT_SIZE, Trex::Charset::Full(), Trex::RenderMode::COLOR );
 	const Trex::Atlas::Bitmap& bitmap = atlas.GetBitmap();
@@ -43,7 +47,7 @@ int main()
 
 	atlas.SaveToFile( "Example_9_Atlas_Emoji.png" );
 
-	InitWindow( 500, 250, "Render Emojis Example" );
+	InitWindow( 300, 125, "Render Emojis Example" );
 
 	// Load atlas texture
 	Image atlasImage = GetAtlasBitmapAsImage( bitmap );
@@ -56,15 +60,15 @@ int main()
 
 		// Smile emoji
 		const Trex::Glyph& glyphSmile = glyphs.GetGlyphByCodepoint( 0x1F604 );
-		RenderGlyph( 50, 50, glyphSmile, atlasTexture );
+		RenderGlyph( 25, 25, glyphSmile, atlasTexture );
 
-		// Character '@'
-		const Trex::Glyph& glyphAtSign = glyphs.GetGlyphByCodepoint( '@' );
-		RenderGlyph( 150, 50, glyphAtSign, atlasTexture );
+		// Hearth emoji
+		const Trex::Glyph& glyphAtSign = glyphs.GetGlyphByCodepoint( 0x2764 );
+		RenderGlyph( 100, 25, glyphAtSign, atlasTexture );
 
-		// Character from outside the ASCII charset
-		const Trex::Glyph& glyphUndefined = glyphs.GetGlyphByCodepoint( (char)178 );
-		RenderGlyph( 250, 50, glyphUndefined, atlasTexture );
+		// Hedgehog emoji
+		const Trex::Glyph& glyphUndefined = glyphs.GetGlyphByCodepoint( 0x1F994 );
+		RenderGlyph( 175, 25, glyphUndefined, atlasTexture );
 
 		EndDrawing();
 	}

@@ -1,6 +1,29 @@
 #include "Trex/Atlas.hpp"
 #include "raylib.h"
 
+const char* fragmentShader = R"(#version 330
+
+// Input vertex attributes (from vertex shader)
+in vec2 fragTexCoord;
+in vec4 fragColor;
+
+// Input uniform values
+uniform sampler2D texture0;
+
+// Output fragment color
+out vec4 finalColor;
+
+void main()
+{
+    // Calculate alpha using signed distance field (SDF)
+    float distanceFromOutline = texture(texture0, fragTexCoord).r - 0.5;
+    float distanceChangePerFragment = length(vec2(dFdx(distanceFromOutline), dFdy(distanceFromOutline)));
+    float alpha = smoothstep(-distanceChangePerFragment, distanceChangePerFragment, distanceFromOutline);
+
+    // Calculate final fragment color
+    finalColor = vec4(fragColor.rgb, 1.0 - alpha);
+})";
+
 Image GetAtlasAsBitmapImage(const Trex::Atlas::Bitmap& bitmap)
 {
 	Image atlasImage;
@@ -29,7 +52,6 @@ int main()
 {
 	constexpr int FONT_SIZE = 64;
 	const char* FONT_PATH = "fonts/Roboto-Regular.ttf";
-	const char* SHADER_PATH = "shaders/sdf.fs";
 
 	Trex::Atlas atlas(FONT_PATH, FONT_SIZE, Trex::Charset::Ascii(), Trex::RenderMode::SDF);
 	const Trex::Atlas::Bitmap& bitmap = atlas.GetBitmap();
@@ -45,9 +67,7 @@ int main()
 	SetTextureFilter(atlasTexture, TEXTURE_FILTER_BILINEAR); // required for SDF shader
 
 	// Load SDF shader
-	TraceLog(LOG_INFO, "Loading shader from %s", SHADER_PATH);
-	Shader sdfShader = LoadShader(nullptr, SHADER_PATH);
-	TraceLog(LOG_INFO, "Shader loaded successfully");
+	Shader sdfShader = LoadShaderFromMemory(nullptr, fragmentShader);
 
 	Camera2D camera = { 0 };
 	camera.zoom = 1.0f;

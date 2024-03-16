@@ -81,6 +81,12 @@ namespace Trex
 
 	void Font::SetSizeInPixels(Pixels size) // NOLINT(readability-make-member-function-const)
 	{
+		if( FT_HAS_FIXED_SIZES( face ) )
+		{
+			FT_Select_Size(face, 0); // Select the first bitmap strike (should be the only one)
+			return;
+		}
+
 		FT_Error error = FT_Set_Pixel_Sizes(face, 0, size.value);
 		if (error)
 		{
@@ -90,6 +96,12 @@ namespace Trex
 
 	void Font::SetSizeInPoints(Points size) // NOLINT(readability-make-member-function-const)
 	{
+		if( FT_HAS_FIXED_SIZES( face ) )
+		{
+			FT_Select_Size( face, 0 ); // Select the first bitmap strike (should be the only one)
+			return;
+		}
+
 		FT_Error error = FT_Set_Char_Size(face, 0, size.value * 64, 0, 0); // 72 dpi used as default
 		if (error)
 		{
