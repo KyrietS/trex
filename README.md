@@ -57,7 +57,7 @@ for (const Trex::ShapedGlyph& glyph : glyphs)
 ## Getting Started
 To get started with Trex, follow the instructions below:
 
-1. Clone the repository: 
+1. Clone the repository:
 ```
 git clone https://github.com/KyrietS/trex.git
 ```
@@ -125,7 +125,7 @@ Tests use [Google Test](https://github.com/google/googletest) framework.
 **All dependencies are fetched and configured automatically by CMake.**
 
 ## License
-Copyright © 2023-2024 KyrietS\
+Copyright © 2023-2025 KyrietS\
 Use of this software is granted under the terms of the MIT License.
 
 See the [LICENSE](LICENSE) file for more details.
