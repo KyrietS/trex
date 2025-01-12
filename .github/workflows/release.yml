@@ -20,7 +20,7 @@ jobs:
           move build\Release\trex.lib .
           7z a -tzip trex.zip trex.lib
       - name: upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: trex-windows-msvc-x64
           path: trex.zip
@@ -39,7 +39,7 @@ jobs:
           mv build/libtrex.a .
           tar -czf trex.tar.gz libtrex.a
       - name: upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: trex-linux-gcc-x64
           path: trex.tar.gz
