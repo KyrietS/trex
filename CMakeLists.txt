@@ -19,6 +19,9 @@ FetchContent_Declare(
 
 project(Trex)
 
+option(BUILD_EXAMPLES "Build examples" OFF)
+option(BUILD_TESTS "Build tests" OFF)
+
 set(CMAKE_CXX_STANDARD 20)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT trex)
@@ -43,3 +46,14 @@ FetchContent_MakeAvailable(harfbuzz)
 # stb
 FetchContent_MakeAvailable(stb)
 target_include_directories(trex PRIVATE ${stb_SOURCE_DIR})
+
+####################
+
+if (BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
+if (BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

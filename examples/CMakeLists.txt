@@ -20,8 +20,6 @@ add_example_project(Example_7_MeasureText)
 add_example_project(Example_8_RenderFontSubpixel)
 add_example_project(Example_9_RenderEmoji)
 
-# Add Trex library
-add_subdirectory(../ trexlib)
 # Add Trex library with its dependencies to a folder
 set_target_properties(trex PROPERTIES FOLDER "Trex")
 # Get all the dependencies of "trex"

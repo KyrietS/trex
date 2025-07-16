@@ -124,6 +124,16 @@ Tests use [Google Test](https://github.com/google/googletest) framework.
 
 **All dependencies are fetched and configured automatically by CMake.**
 
+## Examples
+
+To build examples, you need to enable the `BUILD_EXAMPLES` option in CMake (`-DBUILD_EXAMPLES=ON`).\
+See [examples/README.md](examples/README.md) for more details.
+
+## Tests
+
+To build tests, you need to enable the `BUILD_TESTS` option in CMake (`-DBUILD_TESTS=ON`).\
+See [tests/README.md](tests/README.md) for more details.
+
 ## License
 Copyright © 2023-2025 KyrietS\
 Use of this software is granted under the terms of the MIT License.

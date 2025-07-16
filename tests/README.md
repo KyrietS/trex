@@ -4,7 +4,7 @@ This directory contains unit tests for Trex.
 ## Running tests
 From the root of the repository, run the following commands:
 ```
-cmake -S tests -B build_tests
-cmake --build build_tests
-ctest --test-dir build_tests
+cmake -S . -B build -DBUILD_TESTS=ON
+cmake --build build
+ctest --test-dir build
 ```

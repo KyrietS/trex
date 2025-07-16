@@ -6,6 +6,6 @@ The examples use the [raylib](https://www.raylib.com/) library for rendering and
 ## Build instructions
 From the root of the repository, run the following commands:
 ```
-cmake -S examples -B build_examples
-cmake --build build_examples
+cmake -S . -B build -DBUILD_EXAMPLES=ON
+cmake --build build
 ```
