@@ -1,19 +1,56 @@
 # Trex API Documentation
 
-## Table of Contents
-1. [Font](#font)
-2. [FontMetrics](#fontmetrics)
-3. [Charset](#charset)
-4. [Glyph](#glyph)
-5. [RenderMode](#rendermode)
-6. [Atlas](#atlas)
-7. [Atlas::Glyphs](#atlasglyphs)
-8. [Atlas::Bitmap](#atlasbitmap)
-9. [ShapedGlyph](#shapedglyph)
-10. [ShapedGlyphs](#shapedglyphs)
-11. [TextMeasurement](#textmeasurement)
-12. [TextShaper](#textshaper)
-13. [BitmapHelpers](#bitmaphelpers)
+- [Font](#font)
+    - [Font::Font](#fontfont)
+    - [Font::SetSize](#fontsetsize)
+    - [Font::GetGlyphIndex](#fontgetglyphindex)
+    - [Font::GetMetrics](#fontgetmetrics)
+- [FontMetrics](#fontmetrics)
+- [Charset](#charset)
+    - [Charset::Charset](#charsetcharset)
+    - [Charset::Full](#charsetfull)
+    - [Charset::Ascii](#charsetascii)
+    - [Charset::Size](#charsetsize)
+    - [Charset::Codepoints](#charsetcodepoints)
+    - [Charset::IsFull](#charsetisfull)
+    - [Charset::begin/end](#charsetbeginend)
+- [Glyph](#glyph)
+- [RenderMode](#rendermode)
+- [Atlas](#atlas)
+    - [Atlas::Atlas](#atlasatlas)
+    - [Atlas::GetBitmap](#atlasgetbitmap)
+    - [Atlas::GetGlyphs](#atlasgetglyphs)
+    - [Atlas::GetFont](#atlasgetfont)
+    - [Atlas::SaveToFile](#atlassavetofile)
+- [Atlas::Glyphs](#atlasglyphs)
+    - [Atlas::Glyphs::SetUnknownGlyph](#atlasglyphssetunknownglyph)
+    - [Atlas::Glyphs::GetUnknownGlyph](#atlasglyphsgetunknownglyph)
+    - [Atlas::Glyphs::GetGlyphByCodepoint](#atlasglyphsgetglyphbycodepoint)
+    - [Atlas::Glyphs::GetGlyphByIndex](#atlasglyphsgetglyphbyindex)
+    - [Atlas::Glyphs::Add](#atlasglyphsadd)
+- [Atlas::Bitmap](#atlasbitmap)
+    - [Atlas::Bitmap::GetWidth](#atlasbitmapgetwidth)
+    - [Atlas::Bitmap::GetHeight](#atlasbitmapgetheight)
+    - [Atlas::Bitmap::GetChannels](#atlasbitmapgetchannels)
+    - [Atlas::Bitmap::Format](#atlasbitmapformat)
+    - [Atlas::Bitmap::Draw](#atlasbitmapdraw)
+- [ShapedGlyph](#shapedglyph)
+- [AtlasBitmap](#atlasbitmap-1)
+- [AtlasGlyphs](#atlasglyphs-1)
+- [ShapedGlyphs](#shapedglyphs)
+- [TextMeasurement](#textmeasurement)
+- [TextShaper](#textshaper)
+    - [TextShaper::TextShaper](#textshapертextshaper)
+    - [TextShaper::ShapeAscii](#textshapershapeascii)
+    - [TextShaper::ShapeUtf8](#textshapershapeutf8)
+    - [TextShaper::ShapeUtf32](#textshapershapeutf32)
+    - [TextShaper::ShapeUnicode](#textshapershapeunicode)
+    - [TextShaper::GetFontMetrics](#textshapergetfontmetrics)
+    - [TextShaper::Measure](#textshapermeasure)
+- [BitmapHelpers](#bitmaphelpers)
+    - [ConvertBitmapToGrayAlpha](#convertbitmaptograyalpha)
+    - [ConvertBitmapToRGB](#convertbitmaptorgb)
+    - [ConvertBitmapToRGBA](#convertbitmaptorgba)
 
 ## Font
 Used internally by [Atlas](#atlas) to load a font file and generate a bitmap.
@@ -192,7 +229,7 @@ Note: If you use [TextShaper](#textshaper) to shape text, you don't need to use 
 ```cpp
 const shared_ptr<const Font> Atlas::GetFontFace() const;
 ```
-Get the Font object. 
+Get the Font object.
 
 Note: You should never use the `Font::face` without making sure that the Font object is still alive.
 
@@ -213,7 +250,7 @@ void Atlas::Glyphs::SetUnknownGlyph(uint32_t codepoint) const;
 Set the unknown glyph to be used when a glyph is not found in the atlas.
 * `codepoint` - Unicode codepoint. If the codepoint is not found in the atlas, the function does nothing.
 
-If the unknown glyph is not set, the atlas will try to set it to some sensible value. 
+If the unknown glyph is not set, the atlas will try to set it to some sensible value.
 
 ### Atlas::Glyphs::GetUnknownGlyph
 ```cpp
@@ -266,7 +303,7 @@ Get the number of color channels in the atlas bitmap. When `RenderMode::DEFAULT`
 ```cpp
 PixelFormat Atlas::Bitmap::Format() const;
 ```
-Get the [PixelFormat](#pixelformat) of the atlas bitmap. 
+Get the [PixelFormat](#pixelformat) of the atlas bitmap.
 
 ### Atlas::Bitmap::Draw
 ```cpp
